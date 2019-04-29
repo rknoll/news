@@ -32,10 +32,6 @@ const styles = (theme) => ({
     },
   },
   content: {
-    height: '100%',
-    overflowY: 'scroll',
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
     paddingTop: theme.spacing.unit * 3 + 48,
     [theme.breakpoints.down('xs')]: {
