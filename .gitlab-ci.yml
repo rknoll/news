@@ -1,0 +1,48 @@
+image: docker:stable
+services:
+  - docker:dind
+
+stages:
+  - build
+  - release
+  - deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+build:
+  stage: build
+  script:
+    - docker pull $CONTAINER_RELEASE_IMAGE || true
+    - docker build --cache-from $CONTAINER_RELEASE_IMAGE:latest -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
+
+release-image:
+  stage: release
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  image: docker:git
+  script:
+    - eval $(ssh-agent -s) && mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh-keyscan $COREOS_HOST >> ~/.ssh/known_hosts
+    - ssh $COREOS_USER@$COREOS_HOST "docker stop news || true"
+    - ssh $COREOS_USER@$COREOS_HOST "docker rm news || true"
+    - ssh $COREOS_USER@$COREOS_HOST "docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY
+    - ssh $COREOS_USER@$COREOS_HOST "docker pull "$CONTAINER_RELEASE_IMAGE
+    - ssh $COREOS_USER@$COREOS_HOST "docker run -p 3002:3000 --name news --env PORT=3000 --env NEWSAPI__API_KEY="$NEWSAPI__API_KEY" -d --restart always "$CONTAINER_RELEASE_IMAGE
+  only:
+    - master
