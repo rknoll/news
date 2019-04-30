@@ -16,5 +16,5 @@ export default {
   }),
   remove: () => ({
     type: types.REMOVE
-  })
+  }),
 };

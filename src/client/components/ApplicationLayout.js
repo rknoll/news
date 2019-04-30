@@ -6,9 +6,13 @@ import AppBar from '@material-ui/core/AppBar';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import IconButton from '@material-ui/core/IconButton';
+import Badge from '@material-ui/core/Badge';
 import Notifications from '../components/Notifications';
 import Dialogs from './Dialogs';
 import mainTheme from '../theme';
+import dialogActions, {DIALOGS} from '../store/actions/dialogs';
 
 const styles = (theme) => ({
   root: {
@@ -53,6 +57,12 @@ const ApplicationLayout = (props) => (
           <Typography variant='h6' color='inherit' noWrap={true} className={props.classes.flex}>
             News
           </Typography>
+          { props.notificationPermissions === 'default' || props.notificationPermissions === 'prompt' &&
+          <IconButton color='inherit' onClick={props.showNotificationDialog}>
+            <Badge badgeContent={1} color='secondary'>
+              <NotificationsIcon />
+            </Badge>
+          </IconButton> }
         </Toolbar>
         {props.loading !== 0 && <LinearProgress variant='indeterminate' classes={{ root: props.classes.loadingBar }} />}
       </AppBar>
@@ -67,9 +77,12 @@ const ApplicationLayout = (props) => (
 
 const mapStateToProps = (state) => ({
   loading: state.app.loading,
+  notificationPermissions: state.permissions.notifications,
 });
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = (dispatch) => ({
+  showNotificationDialog: () => dispatch(dialogActions.show(DIALOGS.NOTIFICATIONS)),
+});
 
 const StyledApp = withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ApplicationLayout));
 

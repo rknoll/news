@@ -4,6 +4,7 @@ import news from './news';
 import dialogs from './dialogs';
 import notifications from './notifications';
 import app from './app';
+import permissions from './permissions';
 
 export default (history) => combineReducers({
   router: connectRouter(history),
@@ -11,4 +12,5 @@ export default (history) => combineReducers({
   dialogs,
   notifications,
   app,
+  permissions,
 });

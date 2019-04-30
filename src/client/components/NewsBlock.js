@@ -14,7 +14,7 @@ const styles = theme => ({
   },
   summary: {
     [theme.breakpoints.down('xs')]: {
-      padding: '0 0 0 12px',
+      padding: '0 12px',
     },
   },
   expand: {
@@ -25,36 +25,22 @@ const styles = theme => ({
   headerContent: {
     margin: '13px 0',
   },
-  header: {
-    display: 'flex',
-    '&>$secondaryHeading': {
-      [theme.breakpoints.down('xs')]: {
-        display: 'none',
-      },
-    },
-    [theme.breakpoints.down('xs')]: {
-      display: 'flex',
-      flexDirection: 'column',
-    },
-  },
   headerExpanded: {
-    '& $secondaryHeading': {
-      [theme.breakpoints.down('xs')]: {
-        display: 'block',
-      },
-    },
     '& $headerContent': {
       margin: '13px 0',
     },
   },
-  heading: {
+  title: {
     fontSize: theme.typography.pxToRem(15),
-    flexBasis: '33.33%',
-    flexShrink: 0,
   },
-  secondaryHeading: {
+  description: {
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
+  },
+  icon: {
+    marginLeft: 'auto',
+    width: '40px',
+    height: '40px',
   },
 });
 
@@ -66,13 +52,11 @@ const NewsBlock = (props) => {
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}
                              classes={{ expandIcon: classes.expand, content: classes.headerContent }}
                              className={classes.summary}>
-        <div className={classes.header}>
-          <Typography className={classes.heading}>{news.title}</Typography>
-          <Typography className={classes.secondaryHeading}>{news.description}</Typography>
-        </div>
+        <Typography className={classes.title}>{news.title}</Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
-        {news.id}
+        <Typography className={classes.description}>{news.description}</Typography>
+        <img className={classes.icon} src={news.iconUrl} />
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );

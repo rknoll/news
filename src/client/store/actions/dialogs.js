@@ -1,6 +1,6 @@
 import actionTypes from '../../decorators/actionTypes';
 
-export const types = actionTypes('DIALOGS')({
+export const types = actionTypes('dialogs')({
   SHOW: 'SHOW',
   HIDE: 'HIDE',
   SUBMIT: 'SUBMIT',
@@ -9,6 +9,7 @@ export const types = actionTypes('DIALOGS')({
 
 export const DIALOGS = {
   REQUIREMENTS: 'REQUIREMENTS',
+  NOTIFICATIONS: 'NOTIFICATIONS',
 };
 
 export default {

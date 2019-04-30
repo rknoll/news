@@ -3,17 +3,26 @@ import NewsAPI from 'newsapi';
 const apiKey = process.env['NEWSAPI__API_KEY'];
 const newsapi = new NewsAPI(apiKey);
 
+let cached = null;
+
+const fetchArticles = () => newsapi.v2.topHeadlines({
+  language: 'en',
+});
+
 export const getNews = async () => {
-  const result = await newsapi.v2.topHeadlines({
-    language: 'en',
-  });
+  if (!cached) {
+    const result = await fetchArticles();
 
-  // TODO: create unique ID and fetch urlToImage
+    // TODO: create unique ID and fetch urlToImage
 
-  return result.articles.map(article => ({
-    title: article.title,
-    description: article.description,
-    iconUrl: article.urlToImage,
-    timestamp: article.publishedAt,
-  }));
+    cached = result.articles.map((article, index) => ({
+      id: index,
+      title: article.title,
+      description: article.description,
+      iconUrl: article.urlToImage,
+      timestamp: article.publishedAt,
+    }));
+  }
+
+  return cached;
 };
