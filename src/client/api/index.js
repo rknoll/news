@@ -27,3 +27,5 @@ export const baseRequest = ({ url, data, query, method = 'GET', json = true } = 
 };
 
 export const newsListRequest = () => baseRequest({ url: '/api/news' });
+
+export const subscribeRequest = (data) => baseRequest({ url: '/api/subscriptions', method: 'POST', data });

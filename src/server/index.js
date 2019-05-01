@@ -6,7 +6,7 @@ import apiRouter from './api';
 const statics = path.resolve(__dirname, '../../public');
 
 const app = express();
-const port = process.env['PORT'] || 3000;
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json({ limit: '15mb' }));
 app.use('/api', apiRouter());

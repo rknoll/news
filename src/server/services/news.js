@@ -1,6 +1,6 @@
 import NewsAPI from 'newsapi';
 
-const apiKey = process.env['NEWSAPI__API_KEY'];
+const apiKey = process.env.NEWSAPI__API_KEY;
 const newsapi = new NewsAPI(apiKey);
 
 let cached = null;

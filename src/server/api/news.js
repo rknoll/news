@@ -5,7 +5,7 @@ export default () => {
   const router = Router();
 
   router.get('/', async (req, res) => {
-    console.log('Got GET request');
+    console.log('Got /news GET request');
     const news = await getNews();
     res.send(news);
   });

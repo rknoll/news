@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 const pkg = require('./package.json');
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -30,9 +32,20 @@ const config = {
           'css-loader',
         ],
       },
+      {
+        test: /\.(png|jpe?g|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'img'
+            },
+          },
+        ],
+      },
     ],
   },
-  devtool: 'cheap-module-eval-source-map',
   profile: true,
   stats: {
     children: false,
@@ -49,10 +62,15 @@ const config = {
         collapseWhitespace: true
       } : false,
     }),
+    new ServiceWorkerWebpackPlugin({
+      entry: path.join(__dirname, 'src/client/sw.js')
+    }),
+    new Dotenv(),
   ],
 };
 
 if (!isProduction) {
+  config.devtool = 'cheap-module-eval-source-map';
   config.devServer = {
     compress: true,
     inline: true,

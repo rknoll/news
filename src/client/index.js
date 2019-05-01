@@ -3,9 +3,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
+import runtime from 'serviceworker-webpack-plugin/lib/runtime';
 import App from './components/App';
 import store, { history } from './store';
+import { urlBase64ToUint8Array } from './helpers/encoding';
+import { subscribeRequest } from './api';
 import './styles/styles.css';
+import './img/icon.png';
 
 const render = (Component) => {
   ReactDOM.render(
@@ -32,3 +36,19 @@ if (module.hot) {
     render(require('./components/App').default);
   });
 }
+
+async function subscribe() {
+  const registration = await runtime.register();
+  await navigator.serviceWorker.ready;
+  const result = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(process.env.WEBPUSH__PUBLIC_KEY)
+  });
+  await subscribeRequest(result);
+}
+
+subscribe().then(() => {
+  console.log('Subscribed!');
+}, (error) => {
+  console.error(error && error.message || error);
+});
