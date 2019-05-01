@@ -26,7 +26,7 @@ const config = (api) => {
   api.cache(true);
 
   return {
-    presets: getCommonConfig(process.env.IS_WEBPACK === 'true' ? { browsers } : {}),
+    presets: getCommonConfig({ browsers }),
     plugins: [
       '@babel/plugin-proposal-class-properties',
     ]
