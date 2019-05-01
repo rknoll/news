@@ -67,7 +67,11 @@ const config = {
     new ServiceWorkerWebpackPlugin({
       entry: path.join(__dirname, 'src/client/sw.js')
     }),
-    new Dotenv(),
+    new Dotenv({
+      safe: true,
+      systemvars: true,
+      silent: true,
+    }),
   ],
 };
 
