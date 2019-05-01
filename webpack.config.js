@@ -6,6 +6,8 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const pkg = require('./package.json');
 const isProduction = process.env.NODE_ENV === 'production';
 
+process.env.IS_WEBPACK = 'true';
+
 const config = {
   mode: isProduction ? 'production' : 'development',
   entry: './src/client/index.js',

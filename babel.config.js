@@ -4,15 +4,13 @@ const browsers = [
   'ios > 8',
   'not ie < 10'
 ];
+const node = 'current';
 
 const getCommonConfig = (targets = {}) => [
   [
     '@babel/env',
     {
-      targets: {
-        node: 'current',
-        ...targets
-      },
+      targets,
       useBuiltIns: 'usage',
       corejs: {
         version: 2,
@@ -26,7 +24,7 @@ const config = (api) => {
   api.cache(true);
 
   return {
-    presets: getCommonConfig({ browsers }),
+    presets: getCommonConfig(process.env.IS_WEBPACK === 'true' ? { browsers } : { node }),
     plugins: [
       '@babel/plugin-proposal-class-properties',
     ]
