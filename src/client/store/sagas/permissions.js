@@ -7,13 +7,15 @@ function permissionChanged() {
   return eventChannel(emitter => {
     let unsubscribe = () => unsubscribe = undefined;
 
-    navigator.permissions.query({ name: 'notifications' }).then(function(result) {
-      if (!unsubscribe) return;
-      const trigger = () => emitter(permissionActions.updatePermissions({notifications: result.state}));
-      result.onchange = trigger;
-      unsubscribe = () => result.onchange = undefined;
-      trigger();
-    });
+    if ('permissions' in navigator) {
+      navigator.permissions.query({name: 'notifications'}).then(function (result) {
+        if (!unsubscribe) return;
+        const trigger = () => emitter(permissionActions.updatePermissions({notifications: result.state}));
+        result.onchange = trigger;
+        unsubscribe = () => result.onchange = undefined;
+        trigger();
+      });
+    }
 
     return unsubscribe;
   });

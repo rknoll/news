@@ -57,7 +57,7 @@ const ApplicationLayout = (props) => (
           <Typography variant='h6' color='inherit' noWrap={true} className={props.classes.flex}>
             News
           </Typography>
-          { props.notificationPermissions === 'default' || props.notificationPermissions === 'prompt' &&
+          { (props.notificationPermissions === 'default' || props.notificationPermissions === 'prompt') &&
           <IconButton color='inherit' onClick={props.showNotificationDialog}>
             <Badge badgeContent={1} color='secondary'>
               <NotificationsIcon />

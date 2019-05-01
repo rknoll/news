@@ -38,6 +38,8 @@ if (module.hot) {
 }
 
 async function subscribe() {
+  if (!('serviceWorker' in navigator)) throw new Error('serviceWorker not supported by this browser');
+  if (!('PushManager' in window)) throw new Error('Push messaging isn\'t supported.');
   const registration = await runtime.register();
   await navigator.serviceWorker.ready;
   const result = await registration.pushManager.subscribe({
