@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const pkg = require('./package.json');
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -52,6 +53,7 @@ const config = {
     colors: true
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: `index.html`,
       template: 'src/client/index.html',
