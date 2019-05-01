@@ -29,10 +29,12 @@ export const addSubscription = async (subscription) => {
 };
 
 export const notifyAll = (data) => {
+  console.log(`Notifying ${subscriptions.length} users..`);
   return Promise.all(subscriptions.map(async (subscription) => {
     try {
-      await webpush.sendNotification(subscription, data);
+      await webpush.sendNotification(subscription, JSON.stringify(data));
     } catch (error) {
+      console.error('Error in subscription', error && error.message || error);
       await removeSubscription(subscription);
     }
   }));
