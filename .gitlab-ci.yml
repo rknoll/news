@@ -45,6 +45,9 @@ deploy:
     - ssh $COREOS_USER@$COREOS_HOST "docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY
     - ssh $COREOS_USER@$COREOS_HOST "docker pull "$CONTAINER_RELEASE_IMAGE
     - ssh $COREOS_USER@$COREOS_HOST "docker run -p 3002:3000 --name news --env PORT=3000
-      -e NEWSAPI__API_KEY -e WEBPUSH__PRIVATE_KEY -e WEBPUSH__PUBLIC_KEY -d --restart always "$CONTAINER_RELEASE_IMAGE
+      --env NEWSAPI__API_KEY="$NEWSAPI__API_KEY"
+      --env WEBPUSH__PRIVATE_KEY="$WEBPUSH__PRIVATE_KEY"
+      --env WEBPUSH__PUBLIC_KEY="$WEBPUSH__PUBLIC_KEY"
+      -d --restart always "$CONTAINER_RELEASE_IMAGE
   only:
     - master
