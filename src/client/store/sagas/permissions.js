@@ -21,9 +21,15 @@ function permissionChanged() {
   });
 }
 
+const getPermission = () => new Promise((resolve) => {
+  Notification.requestPermission(resolve);
+});
+
 function* requestPermissions() {
-  yield call(Notification.requestPermission);
+  console.log('requesting..');
+  yield call(getPermission);
   const result = Notification.permission;
+  console.log(`result: ${result}`);
   yield put(permissionActions.updatePermissions({notifications: result}));
   if (result !== 'default') {
     yield put(dialogActions.hide(DIALOGS.NOTIFICATIONS));

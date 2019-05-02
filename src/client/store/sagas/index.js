@@ -3,6 +3,7 @@ import news from './news';
 import dialogs from './dialogs';
 import permissions from './permissions';
 import requirements from './requirements';
+import push from './push';
 
 export default function* () {
   yield all([
@@ -10,5 +11,6 @@ export default function* () {
     ...dialogs(),
     ...permissions(),
     ...requirements(),
+    ...push(),
   ]);
 }
