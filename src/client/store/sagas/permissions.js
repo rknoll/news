@@ -1,7 +1,8 @@
-import { call, put, takeEvery, take } from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga'
 import permissionActions, { types } from '../actions/permissions';
 import dialogActions, { DIALOGS } from '../actions/dialogs';
+import { forwardActions } from '../../helpers/sagas';
 
 function permissionChanged() {
   return eventChannel(emitter => {
@@ -38,14 +39,6 @@ function* requestPermissions() {
 
 function* watchRequest() {
   yield takeEvery(types.REQUEST, requestPermissions);
-}
-
-function* forwardActions(source) {
-  const channel = yield call(source);
-  while (true) {
-    const action = yield take(channel);
-    yield put(action);
-  }
 }
 
 export default () => [

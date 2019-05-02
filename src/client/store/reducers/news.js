@@ -5,6 +5,9 @@ const initialState = {
   list: null,
 };
 
+const params = new URLSearchParams(window.location.search);
+if (params.has('open')) initialState.selected[params.get('open')] = true;
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case types.SELECT:

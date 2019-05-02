@@ -85,6 +85,10 @@ const config = {
     }),
     new WebappWebpackPlugin({
       logo: './src/client/img/icon.png',
+      favicons: {
+        theme_color: '#33691e',
+        start_url: '/',
+      },
     }),
   ],
 };

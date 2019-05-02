@@ -59,8 +59,8 @@ const fetchAndStoreImage = async (url, id) => {
 const addNewArticle = async (article) => {
   if (!cached) cached = [];
   if (articleExists(article)) return null;
-  if (!article.title.trim()) return null;
-  if (!article.description.trim()) return null;
+  if (!article.title || !article.title.trim()) return null;
+  if (!article.description || !article.description.trim()) return null;
 
   // TODO: find better id
   const id = cached.length;

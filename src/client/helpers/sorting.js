@@ -46,11 +46,11 @@ export const orderArray = (sorter = orderText) => (left, right, direction = 'asc
 export const orderProperty = (property, sorter = orderText) => (left, right, direction = 'asc') =>
   sorter(left[property], right[property], direction);
 
-export const stableSort = (array, order) => {
+export const stableSort = (array, sorter, direction = 'asc') => {
   const stabilizedThis = array.map((el, index) => [el, index]);
 
   stabilizedThis.sort((left, right) => {
-    const result = order(left[0], right[0]);
+    const result = sorter(left[0], right[0], direction);
 
     return result === 0 ? left[1] - right[1] : result;
   });
