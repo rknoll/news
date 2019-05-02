@@ -1,7 +1,7 @@
 import { put, takeEvery } from 'redux-saga/effects';
 import newsActions, { types } from '../actions/news';
 import appActions from '../actions/app';
-import { newsListRequest, newsDetailsRequest } from '../../api';
+import { newsListRequest } from '../../api';
 import request from './request';
 
 function* getNewsList() {

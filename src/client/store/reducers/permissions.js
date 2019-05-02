@@ -1,7 +1,7 @@
 import { types } from '../actions/permissions';
 
 const initialState = {
-  notifications: (Notification && Notification.permission) || 'default',
+  notifications: (window.Notification && window.Notification.permission) || 'default',
 };
 
 export default (state = initialState, action) => {
