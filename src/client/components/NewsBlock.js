@@ -33,19 +33,35 @@ const styles = theme => ({
   title: {
     fontSize: theme.typography.pxToRem(15),
   },
+  details: {
+    overflow: 'auto',
+    width: '100%',
+    display: 'block',
+    [theme.breakpoints.down('xs')]: {
+      padding: '8px 12px 24px',
+    },
+  },
   description: {
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
   },
   icon: {
-    marginLeft: 'auto',
+    float: 'right',
     width: '40px',
     height: '40px',
+    marginLeft: '8px',
+    marginBottom: '8px',
   },
 });
 
 const NewsBlock = (props) => {
   const { classes, selected, select, news } = props;
+
+  const details = selected && <React.Fragment>
+    <img className={classes.icon} src={news.iconUrl} />
+    <Typography className={classes.description}>{news.description}</Typography>
+  </React.Fragment>;
+
   return (
     <ExpansionPanel classes={{ expanded: classes.headerExpanded }} className={classes.root}
                     expanded={selected} onChange={select}>
@@ -54,9 +70,8 @@ const NewsBlock = (props) => {
                              className={classes.summary}>
         <Typography className={classes.title}>{news.title}</Typography>
       </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
-        <Typography className={classes.description}>{news.description}</Typography>
-        <img className={classes.icon} src={news.iconUrl} />
+      <ExpansionPanelDetails className={classes.details}>
+        {details}
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );

@@ -3,3 +3,4 @@ public/
 .idea
 .env
 .DS_Store
+articles.json

@@ -36,6 +36,7 @@ const styles = (theme) => ({
     },
   },
   content: {
+    width: '100%',
     padding: theme.spacing.unit * 3,
     paddingTop: theme.spacing.unit * 3 + 48,
     [theme.breakpoints.down('xs')]: {

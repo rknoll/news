@@ -5,6 +5,6 @@ self.addEventListener('push', ev => {
   console.log('Got push', data);
   self.registration.showNotification(data.title, {
     body: data.description,
-    icon: '/img/icon.png'
+    icon: data.iconUrl,
   });
 });
