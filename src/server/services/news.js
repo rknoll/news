@@ -59,6 +59,8 @@ const fetchAndStoreImage = async (url, id) => {
 const addNewArticle = async (article) => {
   if (!cached) cached = [];
   if (articleExists(article)) return null;
+  if (!article.title.trim()) return null;
+  if (!article.description.trim()) return null;
 
   // TODO: find better id
   const id = cached.length;
@@ -76,8 +78,8 @@ const addNewArticle = async (article) => {
 
   const data = {
     id,
-    title: article.title,
-    description: article.description,
+    title: article.title.trim(),
+    description: article.description.trim(),
     iconUrl: article.urlToImage,
     timestamp: article.publishedAt,
   };

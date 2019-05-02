@@ -10,7 +10,7 @@ export default createMuiTheme({
   },
   palette: {
     type: 'light',
-    primary: { main: lightGreen[700] },
+    primary: { main: lightGreen[900] },
     secondary: { main: lightBlue[600] },
     error: {
       main: '#f44336',
@@ -22,7 +22,7 @@ export default createMuiTheme({
     },
     // Used by `getContrastText()` to maximize the contrast between the background and
     // the text.
-    contrastThreshold: 3,
+    contrastThreshold: 3.5,
     // Used to shift a color's luminance by approximately
     // two indexes within its tonal palette.
     // E.g., shift from Red 500 to Red 300 or Red 700.
