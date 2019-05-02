@@ -86,13 +86,22 @@ const addNewArticle = async (article) => {
   return data;
 };
 
-const fetchAndAddArticles = async () => {
+let inflightFetchAndAddArticles = null;
+const doFetchAndAddArticles = async () => {
   const result = await fetchArticles(false);
   const added = [];
   for (let article of result.articles.reverse()) {
     added.push(await addNewArticle(article));
   }
   return added.filter(Boolean);
+};
+const fetchAndAddArticles = async () => {
+  if (!inflightFetchAndAddArticles)
+    inflightFetchAndAddArticles = doFetchAndAddArticles().then(result => {
+      inflightFetchAndAddArticles = null;
+      return result;
+    });
+  return inflightFetchAndAddArticles;
 };
 
 export const getNews = async () => {
@@ -119,5 +128,3 @@ const updateNews = async () => {
 };
 
 setTimeout(updateNews, updateInterval);
-
-updateNews();

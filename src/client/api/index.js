@@ -1,7 +1,35 @@
 import qs from 'qs';
 
-export const baseRequest = ({ url, data, query, method = 'GET', json = true } = {}) => {
+export const baseRequest = async ({ url, data, query, method = 'GET', json = true, cacheData = false } = {}) => {
   const requestUrl = query ? `${url}?${qs.stringify(query)}` : url;
+
+  const responseToPromise = (cacheResponse) => async (response) => {
+    if (cacheResponse) {
+      try {
+        const cache = await caches.open('news-api');
+        await cache.put(requestUrl, response.clone());
+      } catch (ignored) {}
+    }
+
+    const parsed = json ? response.json() : response.blob();
+
+    if (response.status >= 200 && response.status < 300) {
+      return parsed;
+    } else {
+      return parsed.then(Promise.reject.bind(Promise));
+    }
+  };
+
+  const maybeTryCache = (resolve, reject) => async (error) => {
+    if (cacheData) {
+      try {
+        const match = await caches.match(requestUrl);
+        if (match) return resolve(await responseToPromise(false)(match));
+      } catch (ignored) {
+      }
+    }
+    return reject(error);
+  };
 
   return new Promise((resolve, reject) => {
     fetch(requestUrl, {
@@ -12,20 +40,12 @@ export const baseRequest = ({ url, data, query, method = 'GET', json = true } = 
       },
       method,
       body: data ? JSON.stringify(data) : undefined
-    }).then((response) => {
-        const parsed = json ? response.json() : response.blob();
-
-        if (response.status >= 200 && response.status < 300) {
-          return parsed;
-        } else {
-          return parsed.then(Promise.reject.bind(Promise));
-        }
-      })
+    }).then(responseToPromise(cacheData))
       .then(resolve)
-      .catch(reject);
+      .catch(maybeTryCache(resolve, reject));
   });
 };
 
-export const newsListRequest = () => baseRequest({ url: '/api/news' });
+export const newsListRequest = () => baseRequest({ url: '/api/news', cacheData: true });
 
 export const subscribeRequest = (data) => baseRequest({ url: '/api/subscriptions', method: 'POST', data });

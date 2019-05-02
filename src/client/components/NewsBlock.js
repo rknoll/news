@@ -57,10 +57,10 @@ const styles = theme => ({
 const NewsBlock = (props) => {
   const { classes, selected, select, news } = props;
 
-  const details = selected && <React.Fragment>
+  const details = selected && <ExpansionPanelDetails className={classes.details}>
     <img className={classes.icon} src={news.iconUrl} />
     <Typography className={classes.description}>{news.description}</Typography>
-  </React.Fragment>;
+  </ExpansionPanelDetails>;
 
   return (
     <ExpansionPanel classes={{ expanded: classes.headerExpanded }} className={classes.root}
@@ -70,9 +70,7 @@ const NewsBlock = (props) => {
                              className={classes.summary}>
         <Typography className={classes.title}>{news.title}</Typography>
       </ExpansionPanelSummary>
-      <ExpansionPanelDetails className={classes.details}>
-        {details}
-      </ExpansionPanelDetails>
+      {details}
     </ExpansionPanel>
   );
 };
