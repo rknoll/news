@@ -1,3 +1,5 @@
+import {newsListRequest} from './api';
+
 async function cacheAssets() {
   const cache = await caches.open('news-assets');
   return cache.addAll([...serviceWorkerOption.assets, '/']);
@@ -5,13 +7,13 @@ async function cacheAssets() {
 
 async function queryAssetsCache(request) {
   const cache = await caches.open('news-assets');
-  const match = await cache.match(request);
+  const match = await cache.match(request, {ignoreSearch: true});
   return match || fetch(request);
 }
 
 async function handlePush(data) {
   const cache = await caches.open('news-assets');
-  await cache.add(data.iconUrl);
+  await Promise.all([cache.add(data.iconUrl), newsListRequest()]);
   return self.registration.showNotification(data.title, {
     body: data.description || undefined,
     icon: data.iconUrl,
