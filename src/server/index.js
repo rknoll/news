@@ -10,6 +10,7 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json({ limit: '15mb' }));
 app.use('/api', apiRouter());
+app.use('/favicon.ico', express.static('img'));
 app.use(express.static(statics));
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));

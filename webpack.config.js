@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const WebappWebpackPlugin = require('webapp-webpack-plugin');
 const pkg = require('./package.json');
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -55,7 +56,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: `index.html`,
+      filename: 'index.html',
       template: 'src/client/index.html',
       publicPath: '/',
       inject: 'body',
@@ -71,6 +72,9 @@ const config = {
       safe: true,
       systemvars: true,
       silent: true,
+    }),
+    new WebappWebpackPlugin({
+      logo: './src/client/img/icon.png',
     }),
   ],
 };
@@ -88,6 +92,7 @@ if (!isProduction) {
     proxy: {
       '/api/*': 'http://localhost:3000',
       '/img/*': 'http://localhost:3000',
+      '/favicon.ico': 'http://localhost:3000',
     },
   };
 }
