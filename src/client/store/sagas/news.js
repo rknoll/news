@@ -26,11 +26,14 @@ async function gotMessage() {
 
 function* getNewsList() {
   try {
+    yield put(appActions.loading(true));
     const data = yield request(newsListRequest);
-    yield call(addToCaches, data);
     yield put(newsActions.newsListResponse(data));
+    yield call(addToCaches, data);
   } catch (error) {
     yield put(appActions.error(error));
+  } finally {
+    yield put(appActions.loading(false));
   }
 }
 
