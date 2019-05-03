@@ -87,6 +87,7 @@ const config = {
       logo: './src/client/img/icon.png',
       favicons: {
         appName: 'News',
+        appleStatusBarStyle: 'default',
         theme_color: '#b71c1c',
         background: '#b71c1c',
         start_url: '/',
