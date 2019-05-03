@@ -18,7 +18,7 @@ async function addToCaches(data) {
 async function gotMessage() {
   return eventChannel(emitter => {
     if (!('serviceWorker' in navigator)) return () => {};
-    const listener = message => emitter(newsActions.select(message.id));
+    const listener = message => emitter(newsActions.select(message.data.id));
     navigator.serviceWorker.addEventListener('message', listener);
     return () => navigator.serviceWorker.removeEventListener('message', listener);
   });
