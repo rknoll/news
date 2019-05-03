@@ -29,9 +29,6 @@ const styles = (theme) => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    '@media all and (display-mode: standalone)': {
-      display: 'none',
-    },
   },
   toolbar: {
     minHeight: '48px',
@@ -48,10 +45,11 @@ const styles = (theme) => ({
       padding: theme.spacing.unit,
       paddingTop: theme.spacing.unit + 48,
     },
-    minWidth: 0,
     '@media all and (display-mode: standalone)': {
-      padding: '8px',
+      padding: theme.spacing.unit,
+      paddingTop: theme.spacing.unit + 48,
     },
+    minWidth: 0,
   },
   flex: {
     flexGrow: 1,
