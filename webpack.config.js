@@ -84,11 +84,11 @@ const config = {
       silent: true,
     }),
     new WebappWebpackPlugin({
-      appName: 'News',
       logo: './src/client/img/icon.png',
       favicons: {
+        appName: 'News',
         theme_color: '#b71c1c',
-        background_color: '#b71c1c',
+        background: '#b71c1c',
         start_url: '/',
       },
     }),
