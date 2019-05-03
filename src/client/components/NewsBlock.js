@@ -64,7 +64,7 @@ const NewsBlock = (props) => {
 
   return (
     <ExpansionPanel classes={{ expanded: classes.headerExpanded }} className={classes.root}
-                    expanded={selected} onChange={select}>
+                    expanded={Boolean(selected)} onChange={select}>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}
                              classes={{ expandIcon: classes.expand, content: classes.headerContent }}
                              className={classes.summary}>

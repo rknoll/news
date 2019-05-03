@@ -4,6 +4,7 @@ import dialogs from './dialogs';
 import permissions from './permissions';
 import requirements from './requirements';
 import push from './push';
+import app from './app';
 
 export default function* () {
   yield all([
@@ -12,5 +13,6 @@ export default function* () {
     ...permissions(),
     ...requirements(),
     ...push(),
+    ...app(),
   ]);
 }

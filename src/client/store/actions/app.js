@@ -3,6 +3,8 @@ import actionTypes from '../../decorators/actionTypes';
 export const types = actionTypes('app')({
   LOADING: 'LOADING',
   ERROR: 'ERROR',
+  INSTALLABLE: 'INSTALLABLE',
+  INSTALL: 'INSTALL',
 });
 
 export default {
@@ -13,5 +15,12 @@ export default {
   error: (error) => ({
     type: types.ERROR,
     error,
+  }),
+  installable: (event) => ({
+    type: types.INSTALLABLE,
+    event,
+  }),
+  install: () => ({
+    type: types.INSTALL,
   }),
 };

@@ -3,8 +3,6 @@ import newsActions, { types } from '../actions/news';
 import appActions from '../actions/app';
 import { newsListRequest } from '../../api';
 import request from './request';
-import { forwardActions } from '../../helpers/sagas';
-import { eventChannel } from 'redux-saga';
 
 async function addToCaches(data) {
   const cache = await caches.open('news-assets');
@@ -13,15 +11,6 @@ async function addToCaches(data) {
   const addingEntries = new Set(data.map(d => d.iconUrl));
   existingEntries.forEach(existing => addingEntries.delete(existing));
   return cache.addAll([...addingEntries]);
-}
-
-async function gotMessage() {
-  return eventChannel(emitter => {
-    if (!('serviceWorker' in navigator)) return () => {};
-    const listener = message => emitter(newsActions.select(message.data.id));
-    navigator.serviceWorker.addEventListener('message', listener);
-    return () => navigator.serviceWorker.removeEventListener('message', listener);
-  });
 }
 
 function* getNewsList() {
@@ -43,5 +32,4 @@ function* watchGetNewsList() {
 
 export default () => [
   watchGetNewsList(),
-  forwardActions(gotMessage),
 ];

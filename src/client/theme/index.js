@@ -1,7 +1,7 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import color from 'color';
-import lightGreen from '@material-ui/core/colors/lightGreen';
-import lightBlue from '@material-ui/core/colors/lightBlue';
+import red from '@material-ui/core/colors/red';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 import amber from '@material-ui/core/colors/amber';
 
 export default createMuiTheme({
@@ -10,8 +10,8 @@ export default createMuiTheme({
   },
   palette: {
     type: 'light',
-    primary: { main: lightGreen[900] },
-    secondary: { main: lightBlue[600] },
+    primary: { main: red[900] },
+    secondary: { main: blueGrey[700] },
     error: {
       main: '#f44336',
       hover: color('#f44336').darken(0.3).toString(),

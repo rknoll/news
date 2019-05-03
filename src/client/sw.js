@@ -1,4 +1,5 @@
 import {newsListRequest} from './api';
+import newsActions from './store/actions/news';
 
 async function cacheAssets() {
   const cache = await caches.open('news-assets');
@@ -14,6 +15,11 @@ async function queryAssetsCache(request) {
 async function handlePush(data) {
   const cache = await caches.open('news-assets');
   await Promise.all([cache.add(data.iconUrl), newsListRequest()]);
+
+  const clientList = await clients.matchAll({ type: 'window' });
+  clientList.forEach(client => client.postMessage(newsActions.newsListRequest()));
+  console.log('Sent newsListRequest to ' + clientList.length + ' clients');
+
   return self.registration.showNotification(data.title, {
     body: data.description || undefined,
     icon: data.iconUrl,
@@ -24,11 +30,10 @@ async function handlePush(data) {
 async function handleClickEvent({notification, action}) {
   if (action === 'close') return notification.close();
   await notification.close();
-  const windows = await clients.matchAll({ type: 'window' });
-  if (!windows || !windows.length) return clients.openWindow(`/?open=${notification.data.id}`);
-  const client = windows[0];
-  client.postMessage({ id: notification.data.id });
-  return client.focus();
+  const clientList = await clients.matchAll({ type: 'window' });
+  if (!clientList.length) return clients.openWindow(`/?open=${notification.data.id}`);
+  clientList[0].postMessage(newsActions.select(notification.data.id));
+  return clientList[0].focus();
 }
 
 self.addEventListener('install', event => event.waitUntil(cacheAssets()));
