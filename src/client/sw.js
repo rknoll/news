@@ -26,7 +26,7 @@ async function handlePush(data) {
       description: data.description,
       category: 'article',
       iconUrl: data.iconUrl,
-      launchUrl: `/?open=${data.id}`,
+      launchUrl: `https://news.rknoll.at/?open=${data.id}`,
     });
   }
 
