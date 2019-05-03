@@ -2,6 +2,7 @@ import { types } from '../actions/push';
 
 const initialState = {
   subscribed: false,
+  serviceWorker: false,
 };
 
 export default (state = initialState, action) => {
@@ -10,6 +11,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         subscribed: action.subscribed,
+      };
+    case types.UPDATE_SERVICE_WORKER:
+      return {
+        ...state,
+        serviceWorker: action.serviceWorker,
       };
     default:
       return state;

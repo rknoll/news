@@ -50,7 +50,7 @@ const styles = (theme) => ({
     },
     minWidth: 0,
     '@media all and (display-mode: standalone)': {
-      padding: 0,
+      padding: '8px',
     },
   },
   flex: {

@@ -11,6 +11,9 @@ const styles = (theme) => ({
     [theme.breakpoints.up('sm')]: {
       padding: '16px',
     },
+    '@media all and (display-mode: standalone)': {
+      padding: 0,
+    },
   },
 });
 
