@@ -18,7 +18,17 @@ async function handlePush(data) {
 
   const clientList = await clients.matchAll({ type: 'window' });
   clientList.forEach(client => client.postMessage(newsActions.newsListRequest()));
-  console.log('Sent newsListRequest to ' + clientList.length + ' clients');
+
+  if ('index' in self) {
+    await self.index.add({
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      category: 'article',
+      iconUrl: data.iconUrl,
+      launchUrl: `/?open=${data.id}`,
+    });
+  }
 
   return self.registration.showNotification(data.title, {
     body: data.description || undefined,
