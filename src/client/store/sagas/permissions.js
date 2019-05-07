@@ -7,16 +7,15 @@ import { forwardActions } from '../../helpers/sagas';
 function permissionChanged() {
   return eventChannel(emitter => {
     let unsubscribe = () => unsubscribe = undefined;
+    if (!('permissions' in navigator)) return unsubscribe;
 
-    if ('permissions' in navigator) {
-      navigator.permissions.query({name: 'notifications'}).then(function (result) {
-        if (!unsubscribe) return;
-        const trigger = () => emitter(permissionActions.updatePermissions({notifications: result.state}));
-        result.onchange = trigger;
-        unsubscribe = () => result.onchange = undefined;
-        trigger();
-      });
-    }
+    navigator.permissions.query({name: 'notifications'}).then(function (result) {
+      if (!unsubscribe) return;
+      const trigger = () => emitter(permissionActions.updatePermissions({notifications: result.state}));
+      result.onchange = trigger;
+      unsubscribe = () => result.onchange = undefined;
+      trigger();
+    });
 
     return unsubscribe;
   });
@@ -27,14 +26,10 @@ const getPermission = () => new Promise((resolve) => {
 });
 
 function* requestPermissions() {
-  console.log('requesting..');
   yield call(getPermission);
   const result = window.Notification.permission;
-  console.log(`result: ${result}`);
   yield put(permissionActions.updatePermissions({notifications: result}));
-  if (result !== 'default') {
-    yield put(dialogActions.hide(DIALOGS.NOTIFICATIONS));
-  }
+  if (result !== 'default') yield put(dialogActions.hide(DIALOGS.NOTIFICATIONS));
 }
 
 function* watchRequest() {

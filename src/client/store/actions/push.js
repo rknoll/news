@@ -1,17 +1,17 @@
 import actionTypes from '../../decorators/actionTypes';
 
 export const types = actionTypes('push')({
-  UPDATE_SUBSCRIBED: 'UPDATE_SUBSCRIBED',
-  UPDATE_SERVICE_WORKER: 'UPDATE_SERVICE_WORKER',
+  UPDATE_SUBSCRIBING: 'UPDATE_SUBSCRIBING',
+  UPDATE_SUBSCRIPTION: 'UPDATE_SUBSCRIPTION',
 });
 
 export default {
-  updateSubscribed: (subscribed) => ({
-    type: types.UPDATE_SUBSCRIBED,
-    subscribed,
+  updateSubscribing: (subscribing) => ({
+    type: types.UPDATE_SUBSCRIBING,
+    subscribing,
   }),
-  updateServiceWorker: (serviceWorker) => ({
-    type: types.UPDATE_SERVICE_WORKER,
-    serviceWorker,
+  updateSubscription: (subscription) => ({
+    type: types.UPDATE_SUBSCRIPTION,
+    subscription,
   }),
 };

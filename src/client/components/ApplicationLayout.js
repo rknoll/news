@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import withStyles from '@material-ui/core/styles/withStyles';
 import AppBar from '@material-ui/core/AppBar';
@@ -15,6 +16,7 @@ import Dialogs from './Dialogs';
 import mainTheme from '../theme';
 import dialogActions, {DIALOGS} from '../store/actions/dialogs';
 import appActions from '../store/actions/app';
+import newsActions from '../store/actions/news';
 
 const styles = (theme) => ({
   root: {
@@ -32,6 +34,7 @@ const styles = (theme) => ({
   },
   toolbar: {
     minHeight: '48px',
+    justifyContent: 'space-between',
     [theme.breakpoints.down('xs')]: {
       paddingLeft: '24px',
       paddingRight: '24px',
@@ -51,8 +54,8 @@ const styles = (theme) => ({
     },
     minWidth: 0,
   },
-  flex: {
-    flexGrow: 1,
+  title: {
+    cursor: 'pointer',
   },
 });
 
@@ -61,19 +64,25 @@ const ApplicationLayout = (props) => (
     <div className={props.classes.root}>
       <AppBar position='fixed' className={props.classes.appBar}>
         <Toolbar variant='dense' className={props.classes.toolbar}>
-          <Typography variant='h6' color='inherit' noWrap={true} className={props.classes.flex}>
+          <Typography variant='h6' color='inherit' noWrap={true} className={props.classes.title} onClick={props.navigateHome}>
             News
           </Typography>
-          { (props.notificationPermissions === 'default' || props.notificationPermissions === 'prompt') &&
-          <IconButton color='inherit' onClick={props.showNotificationDialog}>
-            <Badge badgeContent={1} color='secondary'>
+          <div>
+            { (props.notificationPermissions === 'default' || props.notificationPermissions === 'prompt') &&
+            <IconButton color='inherit' onClick={props.showNotificationDialog}>
+              <Badge badgeContent={1} color='secondary'>
+                <NotificationsIcon />
+              </Badge>
+            </IconButton> }
+            { props.hasSubscription &&
+            <IconButton color='inherit' onClick={props.pushNews}>
               <NotificationsIcon />
-            </Badge>
-          </IconButton> }
-          { props.installEvent &&
-          <IconButton color='inherit' onClick={props.installApp}>
-            <AddToHomeScreenIcon />
-          </IconButton> }
+            </IconButton> }
+            { props.installEvent &&
+            <IconButton color='inherit' onClick={props.installApp}>
+              <AddToHomeScreenIcon />
+            </IconButton> }
+          </div>
         </Toolbar>
         {props.loading !== 0 && <LinearProgress variant='indeterminate' classes={{ root: props.classes.loadingBar }} />}
       </AppBar>
@@ -89,12 +98,15 @@ const ApplicationLayout = (props) => (
 const mapStateToProps = (state) => ({
   loading: state.app.loading,
   notificationPermissions: state.permissions.notifications,
+  hasSubscription: !!state.push.subscription,
   installEvent: state.app.installEvent,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   showNotificationDialog: () => dispatch(dialogActions.show(DIALOGS.NOTIFICATIONS)),
+  pushNews: () => dispatch(newsActions.pushNewsRequest()),
   installApp: () => dispatch(appActions.install()),
+  navigateHome: () => dispatch(push('/')),
 });
 
 const StyledApp = withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ApplicationLayout));

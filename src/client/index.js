@@ -6,7 +6,6 @@ import { AppContainer } from 'react-hot-loader';
 import App from './components/App';
 import store, { history } from './store';
 import './styles/styles.css';
-import './img/icon.png';
 import 'typeface-roboto';
 
 const render = (Component) => {

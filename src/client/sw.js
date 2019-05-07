@@ -1,52 +1,58 @@
-import {newsListRequest} from './api';
+import { newsRequest } from './api';
 import newsActions from './store/actions/news';
+import { add } from './helpers/db';
+import { push } from 'connected-react-router';
 
-async function cacheAssets() {
+const cacheAssets = async (urls) => {
   const cache = await caches.open('news-assets');
-  return cache.addAll([...serviceWorkerOption.assets, '/']);
-}
+  return cache.addAll(urls);
+};
 
-async function queryAssetsCache(request) {
+const queryAssetsCache = async (request) => {
   const cache = await caches.open('news-assets');
   const match = await cache.match(request, {ignoreSearch: true});
   return match || fetch(request);
-}
+};
 
-async function handlePush(data) {
-  const cache = await caches.open('news-assets');
-  await Promise.all([cache.add(data.iconUrl), newsListRequest()]);
+const handlePush = async (data) => {
+  const news = await newsRequest(data.id);
+  await Promise.all([add(news), cacheAssets([news.imageUrl])]);
 
   const clientList = await clients.matchAll({ type: 'window' });
+  console.log(clientList);
   clientList.forEach(client => client.postMessage(newsActions.newsListRequest()));
 
   if ('index' in self.registration) {
     await self.registration.index.add({
-      id: data.id,
-      title: data.title,
-      description: data.description,
+      id: news.id,
+      title: news.title,
+      description: news.description,
       category: 'article',
-      iconUrl: data.iconUrl,
-      launchUrl: `https://news.rknoll.at/?open=${data.id}`,
+      iconUrl: news.imageUrl,
+      launchUrl: `https://news.rknoll.at/news/${news.id}`,
     });
   }
 
-  return self.registration.showNotification(data.title, {
-    body: data.description || undefined,
-    icon: data.iconUrl,
-    data: { id: data.id },
+  return self.registration.showNotification(news.title, {
+    tag: news.id,
+    body: news.description,
+    icon: news.imageUrl,
   });
-}
+};
 
-async function handleClickEvent({notification, action}) {
-  if (action === 'close') return notification.close();
+const handleClickEvent = async ({notification, action}) => {
   await notification.close();
-  const clientList = await clients.matchAll({ type: 'window' });
-  if (!clientList.length) return clients.openWindow(`/?open=${notification.data.id}`);
-  clientList[0].postMessage(newsActions.select(notification.data.id));
-  return clientList[0].focus();
-}
+  if (action === 'close') return;
 
-self.addEventListener('install', event => event.waitUntil(cacheAssets()));
+  const clientList = await clients.matchAll({ type: 'window' });
+  if (!clientList.length) return clients.openWindow(`/news/${notification.tag}`);
+
+  clientList[0].postMessage(push(`/news/${notification.tag}`));
+  return clientList[0].focus();
+};
+
+self.addEventListener('install', event => event.waitUntil(cacheAssets(serviceWorkerOption.assets)));
+self.addEventListener('activate', event => event.waitUntil(clients.claim()));
 self.addEventListener('fetch', event => event.respondWith(queryAssetsCache(event.request)));
 self.addEventListener('push', event => event.waitUntil(handlePush(event.data.json())));
 self.addEventListener('notificationclick', event => event.waitUntil(handleClickEvent(event)));

@@ -6,6 +6,7 @@ import notifications from './notifications';
 import app from './app';
 import permissions from './permissions';
 import push from './push';
+import requirements from './requirements';
 
 export default (history) => combineReducers({
   router: connectRouter(history),
@@ -15,4 +16,5 @@ export default (history) => combineReducers({
   app,
   permissions,
   push,
+  requirements,
 });

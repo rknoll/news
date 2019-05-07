@@ -1,21 +1,21 @@
 import { types } from '../actions/push';
 
 const initialState = {
-  subscribed: false,
-  serviceWorker: false,
+  subscribing: false,
+  subscription: null,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case types.UPDATE_SUBSCRIBED:
+    case types.UPDATE_SUBSCRIBING:
       return {
         ...state,
-        subscribed: action.subscribed,
+        subscribing: action.subscribing,
       };
-    case types.UPDATE_SERVICE_WORKER:
+    case types.UPDATE_SUBSCRIPTION:
       return {
         ...state,
-        serviceWorker: action.serviceWorker,
+        subscription: action.subscription,
       };
     default:
       return state;

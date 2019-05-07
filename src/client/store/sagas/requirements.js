@@ -7,11 +7,14 @@ function* updateRequirements() {
   const requirements = {};
   const state = yield select();
 
-  requirements.notifications = state.permissions.notifications !== 'denied';
+  if (state.permissions.notifications === 'granted') requirements.notifications = true;
+  if (state.permissions.notifications === 'denied') requirements.notifications = false;
+  requirements.serviceWorker = 'serviceWorker' in navigator;
+  requirements.pushManager = 'PushManager' in window;
 
   yield put(requirementActions.updateRequirements(requirements));
   if (Object.values(requirements).includes(false)) {
-    yield put(dialogActions.show(DIALOGS.REQUIREMENTS, {requirements}));
+    yield put(dialogActions.show(DIALOGS.REQUIREMENTS));
   } else {
     yield put(dialogActions.hide(DIALOGS.REQUIREMENTS));
   }

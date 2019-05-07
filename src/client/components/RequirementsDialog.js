@@ -40,6 +40,12 @@ export class RequirementsDialog extends React.Component {
     const { fullScreen, requirements } = this.props;
     const { open } = this.state;
 
+    const missingRequirements = requirements && <React.Fragment>
+      {!requirements.notifications && <Typography variant='body2' color='inherit'>Notification permission</Typography>}
+      {!requirements.serviceWorker && <Typography variant='body2' color='inherit'>ServiceWorker support</Typography>}
+      {!requirements.pushManager && <Typography variant='body2' color='inherit'>PushManager support</Typography>}
+    </React.Fragment>;
+
     return <Dialog open={open} fullScreen={fullScreen} fullWidth={true}
                    maxWidth={fullScreen ? false : 'xs'}>
       <DialogTitle disableTypography={true}>
@@ -51,14 +57,15 @@ export class RequirementsDialog extends React.Component {
         <Typography variant='body2' color='inherit'>
           This browser is missing some requirements:
         </Typography>
-        { requirements && !requirements.notifications && <Typography variant='body2' color='inherit'>Notification permissions</Typography> }
+        { missingRequirements }
       </DialogContent>
     </Dialog>;
   }
 }
 
-const mapStateToProps = ({ dialogs }) => ({
+const mapStateToProps = ({ dialogs, requirements }) => ({
   ...dialogs[DIALOGS.REQUIREMENTS],
+  requirements,
 });
 
 const mapDispatchToProps = (dispatch) => ({

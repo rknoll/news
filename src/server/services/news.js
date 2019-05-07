@@ -26,8 +26,7 @@ export const fetchArticles = async () => {
     language: 'en',
   });
   console.log(`Fetched ${articles.length} news.`);
-  const validArticles = articles.filter(article =>
-    article.urlToImage && article.title && article.description && article.publishedAt);
+  const validArticles = articles.filter(article => article.urlToImage && article.title && article.description && article.publishedAt);
   const articlesWithImages = await Promise.all(validArticles.map(fetchImage));
   return articlesWithImages.map(article => ({
     title: article.title,

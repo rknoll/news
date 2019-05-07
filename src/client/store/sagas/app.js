@@ -1,8 +1,8 @@
 import { put, takeEvery, select } from 'redux-saga/effects';
 import appActions, { types } from '../actions/app';
 import notificationActions from '../actions/notifications';
-import {eventChannel} from 'redux-saga';
-import {forwardActions} from '../../helpers/sagas';
+import { eventChannel } from 'redux-saga';
+import { forwardActions } from '../../helpers/sagas';
 
 async function gotMessage() {
   return eventChannel(emitter => {
@@ -24,9 +24,9 @@ function installable() {
   });
 }
 
-function* showError({ data }) {
+function* showError({ error }) {
   yield put(notificationActions.show({
-    message: data && data.error && data.error.message || 'An unexpected error occurred',
+    message: error && error.message || 'An unexpected error occurred',
     type: 'error',
   }));
 }

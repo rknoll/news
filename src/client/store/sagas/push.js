@@ -3,48 +3,38 @@ import runtime from 'serviceworker-webpack-plugin/lib/runtime';
 import { types as requirementTypes } from '../actions/requirements';
 import pushActions from '../actions/push';
 import appActions from '../actions/app';
-import {subscribeRequest} from '../../api';
-import {urlBase64ToUint8Array} from '../../helpers/encoding';
+import { urlBase64ToUint8Array } from '../../helpers/encoding';
 
 async function subscribe() {
-  if (!('PushManager' in window)) throw new Error('Push messaging isn\'t supported.');
-  console.log('subscribing..');
+  await runtime.register();
   const registration = await navigator.serviceWorker.ready;
-  const result = await registration.pushManager.subscribe({
+  const subscription = await registration.pushManager.getSubscription();
+  return subscription || registration.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(process.env.WEBPUSH__PUBLIC_KEY)
+    applicationServerKey: urlBase64ToUint8Array(process.env.WEBPUSH__PUBLIC_KEY),
   });
-  console.log('persisting on server..');
-  await subscribeRequest(result);
 }
 
 function* updateSubscription() {
   const state = yield select();
 
-  if (!('serviceWorker' in navigator)) {
-    yield put(appActions.error(new Error('serviceWorker not supported by this browser')));
-    return;
-  }
+  if (Object.values(state.requirements).includes(false)) return;
 
-  if (!state.push.serviceWorker) {
-    console.log('registering..');
-    yield runtime.register();
-    console.log('waiting to be ready..');
-    yield navigator.serviceWorker.ready;
-    console.log('serviceWorker registered!');
-    yield put(pushActions.updateServiceWorker(true));
-  }
+  yield runtime.register();
 
-  if (state.permissions.notifications === 'granted') {
-    if (!state.push.subscribed) {
-      yield put(pushActions.updateSubscribed(true));
-      try {
-        yield call(subscribe);
-        console.log('Subscribed!');
-      } catch (error) {
-        yield put(pushActions.updateSubscribed(false));
-      }
-    }
+  if (!state.requirements.notifications) return;
+  if (state.push.subscribing || state.push.subscription) return;
+
+  try {
+    yield put(appActions.loading(true));
+    yield put(pushActions.updateSubscribing(true));
+    const subscription = yield call(subscribe);
+    yield put(pushActions.updateSubscription(subscription));
+  } catch (error) {
+    yield put(appActions.error(error));
+  } finally {
+    yield put(appActions.loading(false));
+    yield put(pushActions.updateSubscribing(false));
   }
 }
 

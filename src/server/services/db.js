@@ -13,6 +13,8 @@ const connect = async () => {
   return client;
 };
 
+const convertNews = ({_id: id, ...news }) => ({ ...news, id });
+
 export const insertNews = async (news) => {
   const client = await connect();
   try {
@@ -43,7 +45,7 @@ export const getNews = async (id) => {
       .project({ image: 0 })
       .toArray();
     if (data.length !== 1) throw new Error(`Could not find news with id ${id}.`);
-    return data[0];
+    return convertNews(data[0]);
   } finally {
     client.close();
   }
@@ -76,7 +78,7 @@ export const getRandomNews = async () => {
       .project({ image: 0 })
       .toArray();
     if (data.length !== 1) throw new Error(`Could not find any news.`);
-    return data[0];
+    return convertNews(data[0]);
   } finally {
     client.close();
   }

@@ -4,13 +4,14 @@ const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const WebappWebpackPlugin = require('webapp-webpack-plugin');
 const pkg = require('./package.json');
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 process.env.IS_WEBPACK = 'true';
 
 const config = {
   mode: isProduction ? 'production' : 'development',
-  entry: './src/client/index.js',
+  entry: path.join(__dirname, 'src/client/index.js'),
   output: {
     publicPath: '/',
     filename: `js/[name].js${isProduction ? '?[chunkhash]' : ''}`,
@@ -25,7 +26,7 @@ const config = {
         test: /\.js$/,
         exclude: /node_modules/,
         options: {
-          configFile: './babel.config.js',
+          configFile: path.join(__dirname, 'babel.config.js'),
         },
       },
       {
@@ -33,18 +34,6 @@ const config = {
         use: [
           'style-loader',
           'css-loader',
-        ],
-      },
-      {
-        test: /\.(png|jpe?g|gif)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: 'img'
-            },
-          },
         ],
       },
       {
@@ -67,7 +56,7 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: 'src/client/index.html',
+      template: path.join(__dirname, 'src/client/index.html'),
       publicPath: '/',
       inject: 'body',
       minify: isProduction ? {
@@ -84,7 +73,7 @@ const config = {
       silent: true,
     }),
     new WebappWebpackPlugin({
-      logo: './src/client/img/icon.png',
+      logo: path.join(__dirname, 'src/client/assets/icon.png'),
       favicons: {
         appName: 'News',
         appleStatusBarStyle: 'black',
@@ -98,6 +87,7 @@ const config = {
 
 if (!isProduction) {
   config.devtool = 'cheap-module-eval-source-map';
+  config.resolve = { alias: { 'react-dom': '@hot-loader/react-dom' } };
   config.devServer = {
     compress: true,
     inline: true,
@@ -109,7 +99,6 @@ if (!isProduction) {
     proxy: {
       '/api/*': 'http://localhost:3000',
       '/img/*': 'http://localhost:3000',
-      '/favicon.ico': 'http://localhost:3000',
     },
   };
 }

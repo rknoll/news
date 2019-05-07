@@ -46,6 +46,6 @@ export const baseRequest = async ({ url, data, query, method = 'GET', json = tru
   });
 };
 
-export const newsListRequest = () => baseRequest({ url: '/api/news', cacheData: true });
+export const newsRequest = (id) => baseRequest({ url: `/api/news/${id}`, cacheData: true });
 
-export const subscribeRequest = (data) => baseRequest({ url: '/api/subscriptions', method: 'POST', data });
+export const pushNewsRequest = (data) => baseRequest({ url: '/api/news', method: 'POST', data });
