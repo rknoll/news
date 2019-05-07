@@ -3,13 +3,21 @@ import newsActions from './store/actions/news';
 import db  from './helpers/db';
 import { push } from 'connected-react-router';
 
+const assetsKey = `news-assets-${ASSETS_VERSION}`;
+
 const cacheAssets = async (urls) => {
-  const cache = await caches.open('news-assets');
+  const cache = await caches.open(assetsKey);
   return cache.addAll(urls);
 };
 
+const handleActivate = async () => {
+  await clients.claim();
+  const cacheKeys = await caches.keys();
+  await Promise.all(cacheKeys.map(key => key !== assetsKey && caches.delete(key)));
+};
+
 const queryAssetsCache = async (request) => {
-  const cache = await caches.open('news-assets');
+  const cache = await caches.open(assetsKey);
   const match = await cache.match(request, {ignoreSearch: true});
   if (match) return match;
 
@@ -76,7 +84,7 @@ const handleClickEvent = async ({notification, action}) => {
 };
 
 self.addEventListener('install', event => event.waitUntil(cacheAssets(serviceWorkerOption.assets)));
-self.addEventListener('activate', event => event.waitUntil(clients.claim()));
+self.addEventListener('activate', event => event.waitUntil(handleActivate()));
 self.addEventListener('fetch', event => event.respondWith(queryAssetsCache(event.request)));
 self.addEventListener('push', event => event.waitUntil(handlePush(event.data.json())));
 self.addEventListener('notificationclick', event => event.waitUntil(handleClickEvent(event)));

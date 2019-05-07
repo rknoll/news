@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 const WebappWebpackPlugin = require('webapp-webpack-plugin');
+const webpack = require('webpack');
 const pkg = require('./package.json');
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -91,6 +92,9 @@ const config = {
         background: '#b71c1c',
         start_url: '/',
       },
+    }),
+    new webpack.DefinePlugin({
+      ASSETS_VERSION: webpack.DefinePlugin.runtimeValue(() => `'${new Date().valueOf()}'`),
     }),
   ],
 };
