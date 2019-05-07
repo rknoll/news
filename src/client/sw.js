@@ -11,7 +11,15 @@ const cacheAssets = async (urls) => {
 const queryAssetsCache = async (request) => {
   const cache = await caches.open('news-assets');
   const match = await cache.match(request, {ignoreSearch: true});
-  return match || fetch(request);
+  if (match) return match;
+
+  const url = new URL(request.url);
+  if (!url.pathname.startsWith('/img/') && !url.pathname.startsWith('/api/')) {
+    const match = await cache.match('/index.html', {ignoreSearch: true});
+    if (match) return match;
+  }
+
+  return fetch(request);
 };
 
 const handlePush = async (data) => {
@@ -19,7 +27,6 @@ const handlePush = async (data) => {
   await Promise.all([add(news), cacheAssets([news.imageUrl])]);
 
   const clientList = await clients.matchAll({ type: 'window' });
-  console.log(clientList);
   clientList.forEach(client => client.postMessage(newsActions.newsListRequest()));
 
   if ('index' in self.registration) {
@@ -61,4 +68,3 @@ self.addEventListener('fetch', event => event.respondWith(queryAssetsCache(event
 self.addEventListener('push', event => event.waitUntil(handlePush(event.data.json())));
 self.addEventListener('notificationclick', event => event.waitUntil(handleClickEvent(event)));
 self.addEventListener('message', handleMessage);
-

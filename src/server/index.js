@@ -4,6 +4,7 @@ import path from 'path';
 import bodyParser from 'body-parser';
 import apiRouter from './routers/api';
 import imgRouter from './routers/img';
+import errorMiddleware from './middlewares/errorMiddleware';
 import { scheduleUpdates } from './services/updater';
 
 const statics = path.join(__dirname, '../../public');
@@ -16,7 +17,7 @@ app
   .use(compression());
 
 app
-  .use('/api', apiRouter())
+  .use('/api', apiRouter(), errorMiddleware())
   .use('/img', imgRouter());
 
 app

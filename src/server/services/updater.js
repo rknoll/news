@@ -10,3 +10,11 @@ const updateNews = async () => {
 };
 
 export const scheduleUpdates = () => new CronJob('*/15 * * * *', updateNews).start();
+
+if (process.env.NODE_ENV === 'development') {
+  updateNews().then(() => {
+    console.log('Server ready!');
+  }).catch((error) => {
+    console.log(error && error.message || error);
+  });
+}

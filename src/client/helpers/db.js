@@ -5,12 +5,7 @@ const collection = 'news';
 
 const open = () => openDB(database, 1, {
   upgrade(db) {
-    console.log('Creating database!');
-    try {
-      db.createObjectStore(collection, {keyPath: 'id'});
-    } catch (e) {
-
-    }
+    db.createObjectStore(collection, {keyPath: 'id'});
   },
 });
 

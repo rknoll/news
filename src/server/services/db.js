@@ -1,5 +1,6 @@
 import { MongoClient, ObjectID } from 'mongodb';
 import { Base64Decode } from 'base64-stream';
+import memorydb from './memorydb';
 
 const username = encodeURIComponent(process.env.MONGODB__USERNAME);
 const password = encodeURIComponent(process.env.MONGODB__PASSWORD);
@@ -8,6 +9,7 @@ const database = 'news';
 const url = `mongodb://${username}:${password}@192.168.10.6:27017/${database}`;
 
 const connect = async () => {
+  if (process.env.NODE_ENV === 'development') return memorydb;
   const client = new MongoClient(url, { useNewUrlParser: true });
   await client.connect();
   return client;
