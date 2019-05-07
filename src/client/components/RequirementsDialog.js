@@ -57,9 +57,9 @@ export class RequirementsDialog extends React.Component {
     const { open } = this.state;
 
     const missingRequirements = requirements && <ul>
-      {requirements.notifications === false && <li><Typography variant='body2' color='inherit'>Notification permission</Typography></li>}
-      {requirements.serviceWorker === false && <li><Typography variant='body2' color='inherit'>ServiceWorker support</Typography></li>}
-      {requirements.pushManager === false && <li><Typography variant='body2' color='inherit'>PushManager support</Typography></li>}
+      {requirements.notifications === false && <li><Typography variant='body1' color='inherit'>Notification permission</Typography></li>}
+      {requirements.serviceWorker === false && <li><Typography variant='body1' color='inherit'>ServiceWorker support</Typography></li>}
+      {requirements.pushManager === false && <li><Typography variant='body1' color='inherit'>PushManager support</Typography></li>}
     </ul>;
 
     const handleReload = () => window.location.reload();
@@ -72,7 +72,7 @@ export class RequirementsDialog extends React.Component {
         </Typography>
       </DialogTitle>
       <DialogContent className={classes.content}>
-        <Typography variant='body2' color='inherit'>
+        <Typography variant='body1' color='inherit'>
           This browser is missing some requirements:
         </Typography>
         { missingRequirements }

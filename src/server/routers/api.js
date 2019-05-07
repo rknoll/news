@@ -4,6 +4,7 @@ import { notify } from '../services/push';
 
 const addImageUrl = (news) => ({
   ...news,
+  timestamp: new Date().toISOString(),
   imageUrl: `/img/${news.id}`,
 });
 

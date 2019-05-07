@@ -24,7 +24,7 @@ class News extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const news = stableSort(this.props.news || [], orderProperty('id'), 'desc');
+    const news = stableSort(this.props.news || [], orderProperty('timestamp'), 'desc');
     return (
       <div className={classes.root}>
         {news.map(n => (<NewsBlock news={n} key={n.id} />))}

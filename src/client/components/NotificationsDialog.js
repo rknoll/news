@@ -71,7 +71,7 @@ export class NotificationsDialog extends React.Component {
         </IconButton>
       </DialogTitle>
       <DialogContent className={classes.content}>
-        <Typography variant='body2' color='inherit'>
+        <Typography variant='body1' color='inherit'>
           We'd like to send you breaking news articles as soon as they happen. Please allow notifications in your browser for us to notify you.
         </Typography>
       </DialogContent>

@@ -9,7 +9,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
 import Typography from '@material-ui/core/Typography';
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from '@material-ui/core/IconButton';
 
 const styles = theme => ({
   root: {
@@ -26,15 +26,17 @@ const styles = theme => ({
     },
   },
   headerContent: {
-    margin: '13px 0',
+    margin: 0,
   },
   headerExpanded: {
     '& $headerContent': {
-      margin: '13px 0',
+      margin: 0,
     },
   },
   title: {
     fontSize: theme.typography.pxToRem(15),
+    alignSelf: 'center',
+    margin: '13px 0',
   },
   details: {
     overflow: 'auto',
@@ -59,6 +61,7 @@ const styles = theme => ({
     display: 'flex',
     flexGrow: 1,
     justifyContent: 'flex-end',
+    alignItems: 'center',
   },
 });
 
@@ -81,7 +84,9 @@ const NewsBlock = (props) => {
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}
                              classes={{ expandIcon: classes.expand, content: classes.headerContent }}
                              className={classes.summary}>
-        <Typography className={classes.title}>{news.title}</Typography>
+        <Typography className={classes.title}>
+          {news.title}
+        </Typography>
         <div className={classes.actions}>
           <IconButton onClick={openDetails}>
             <OpenInBrowserIcon />

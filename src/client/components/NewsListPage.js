@@ -5,6 +5,8 @@ import News from './News';
 const styles = () => ({
   root: {
     width: '100%',
+    maxWidth: 800,
+    margin: 'auto',
   },
 });
 
