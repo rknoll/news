@@ -51,6 +51,19 @@ const handlePush = async (data) => {
   });
 };
 
+const handleMessage = async (event) => {
+  switch (event.data.action) {
+    case 'skipWaiting':
+      return self.skipWaiting();
+    case 'clearNews':
+      if (!('index' in self.registration)) return;
+      const entries = await self.registration.index.list();
+      return Promise.all(entries.map(entry => self.registration.index.remove(entry.id)));
+    default:
+      return;
+  }
+};
+
 const handleClickEvent = async ({notification, action}) => {
   await notification.close();
   if (action === 'close') return;
@@ -62,13 +75,9 @@ const handleClickEvent = async ({notification, action}) => {
   return clientList[0].focus();
 };
 
-const handleMessage = (event) => {
-  if (event.data.action === 'skipWaiting') self.skipWaiting();
-};
-
 self.addEventListener('install', event => event.waitUntil(cacheAssets(serviceWorkerOption.assets)));
 self.addEventListener('activate', event => event.waitUntil(clients.claim()));
 self.addEventListener('fetch', event => event.respondWith(queryAssetsCache(event.request)));
 self.addEventListener('push', event => event.waitUntil(handlePush(event.data.json())));
 self.addEventListener('notificationclick', event => event.waitUntil(handleClickEvent(event)));
-self.addEventListener('message', handleMessage);
+self.addEventListener('message', event => event.waitUntil(handleMessage(event)));

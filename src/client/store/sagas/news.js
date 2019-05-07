@@ -34,6 +34,7 @@ function* pushNews() {
 function* clearNews() {
   yield put(appActions.loading(true));
   try {
+    navigator.serviceWorker.controller.postMessage({ action: 'clearNews' });
     yield call(clear);
     yield put(newsActions.refreshNewsRequest());
   } catch (error) {
