@@ -8,12 +8,28 @@ import { DIALOGS } from '../store/actions/dialogs';
 import requirementActions from '../store/actions/requirements';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const defaultState = {
   open: false,
 };
 
-const styles = () => ({
+const styles = (theme) => ({
+  title: {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    margin: 0,
+    padding: theme.spacing.unit * 2,
+  },
+  content: {
+    margin: 0,
+    padding: theme.spacing.unit * 2,
+  },
+  actions: {
+    borderTop: `1px solid ${theme.palette.divider}`,
+    margin: 0,
+    padding: theme.spacing.unit,
+  },
 });
 
 export class RequirementsDialog extends React.Component {
@@ -37,28 +53,35 @@ export class RequirementsDialog extends React.Component {
   }
 
   render() {
-    const { fullScreen, requirements } = this.props;
+    const { fullScreen, requirements, classes } = this.props;
     const { open } = this.state;
 
-    const missingRequirements = requirements && <React.Fragment>
-      {!requirements.notifications && <Typography variant='body2' color='inherit'>Notification permission</Typography>}
-      {!requirements.serviceWorker && <Typography variant='body2' color='inherit'>ServiceWorker support</Typography>}
-      {!requirements.pushManager && <Typography variant='body2' color='inherit'>PushManager support</Typography>}
-    </React.Fragment>;
+    const missingRequirements = requirements && <ul>
+      {requirements.notifications === false && <li><Typography variant='body2' color='inherit'>Notification permission</Typography></li>}
+      {requirements.serviceWorker === false && <li><Typography variant='body2' color='inherit'>ServiceWorker support</Typography></li>}
+      {requirements.pushManager === false && <li><Typography variant='body2' color='inherit'>PushManager support</Typography></li>}
+    </ul>;
+
+    const handleReload = () => window.location.reload();
 
     return <Dialog open={open} fullScreen={fullScreen} fullWidth={true}
                    maxWidth={fullScreen ? false : 'xs'}>
-      <DialogTitle disableTypography={true}>
+      <DialogTitle className={classes.title} disableTypography={true}>
         <Typography variant='h6' color='inherit'>
           Missing requirements
         </Typography>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className={classes.content}>
         <Typography variant='body2' color='inherit'>
           This browser is missing some requirements:
         </Typography>
         { missingRequirements }
       </DialogContent>
+      <DialogActions className={classes.actions}>
+        <Button onClick={handleReload} color='primary'>
+          Reload
+        </Button>
+      </DialogActions>
     </Dialog>;
   }
 }

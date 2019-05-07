@@ -1,12 +1,10 @@
 import { put, takeEvery, select, call } from 'redux-saga/effects';
-import runtime from 'serviceworker-webpack-plugin/lib/runtime';
 import { types as requirementTypes } from '../actions/requirements';
 import pushActions from '../actions/push';
 import appActions from '../actions/app';
 import { urlBase64ToUint8Array } from '../../helpers/encoding';
 
 async function subscribe() {
-  await runtime.register();
   const registration = await navigator.serviceWorker.ready;
   const subscription = await registration.pushManager.getSubscription();
   return subscription || registration.pushManager.subscribe({
@@ -19,9 +17,6 @@ function* updateSubscription() {
   const state = yield select();
 
   if (Object.values(state.requirements).includes(false)) return;
-
-  yield runtime.register();
-
   if (!state.requirements.notifications) return;
   if (state.push.subscribing || state.push.subscription) return;
 

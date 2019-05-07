@@ -3,6 +3,7 @@ import { types } from '../actions/app';
 const initialState = {
   loading: 0,
   installEvent: null,
+  updateWorker: null,
 };
 
 export default (state = initialState, action) => {
@@ -16,6 +17,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         installEvent: action.event,
+      };
+    case types.UPDATABLE:
+      return {
+        ...state,
+        updateWorker: action.worker,
       };
     default:
       return state;

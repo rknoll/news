@@ -9,6 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AddToHomeScreenIcon from '@material-ui/icons/AddToHomeScreen';
+import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import Notifications from '../components/Notifications';
@@ -68,6 +69,14 @@ const ApplicationLayout = (props) => (
             News
           </Typography>
           <div>
+            { props.updateWorker &&
+            <IconButton color='inherit' onClick={() => props.updateApp(props.updateWorker)}>
+              <SystemUpdateIcon />
+            </IconButton> }
+            { props.installEvent &&
+            <IconButton color='inherit' onClick={props.installApp}>
+              <AddToHomeScreenIcon />
+            </IconButton> }
             { (props.notificationPermissions === 'default' || props.notificationPermissions === 'prompt') &&
             <IconButton color='inherit' onClick={props.showNotificationDialog}>
               <Badge badgeContent={1} color='secondary'>
@@ -77,10 +86,6 @@ const ApplicationLayout = (props) => (
             { props.hasSubscription &&
             <IconButton color='inherit' onClick={props.pushNews}>
               <NotificationsIcon />
-            </IconButton> }
-            { props.installEvent &&
-            <IconButton color='inherit' onClick={props.installApp}>
-              <AddToHomeScreenIcon />
             </IconButton> }
           </div>
         </Toolbar>
@@ -100,6 +105,7 @@ const mapStateToProps = (state) => ({
   notificationPermissions: state.permissions.notifications,
   hasSubscription: !!state.push.subscription,
   installEvent: state.app.installEvent,
+  updateWorker: state.app.updateWorker,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -107,6 +113,7 @@ const mapDispatchToProps = (dispatch) => ({
   pushNews: () => dispatch(newsActions.pushNewsRequest()),
   installApp: () => dispatch(appActions.install()),
   navigateHome: () => dispatch(push('/')),
+  updateApp: (worker) => worker.postMessage({ action: 'skipWaiting' }),
 });
 
 const StyledApp = withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ApplicationLayout));

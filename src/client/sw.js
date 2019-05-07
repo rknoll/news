@@ -51,8 +51,14 @@ const handleClickEvent = async ({notification, action}) => {
   return clientList[0].focus();
 };
 
+const handleMessage = (event) => {
+  if (event.data.action === 'skipWaiting') self.skipWaiting();
+};
+
 self.addEventListener('install', event => event.waitUntil(cacheAssets(serviceWorkerOption.assets)));
 self.addEventListener('activate', event => event.waitUntil(clients.claim()));
 self.addEventListener('fetch', event => event.respondWith(queryAssetsCache(event.request)));
 self.addEventListener('push', event => event.waitUntil(handlePush(event.data.json())));
 self.addEventListener('notificationclick', event => event.waitUntil(handleClickEvent(event)));
+self.addEventListener('message', handleMessage);
+

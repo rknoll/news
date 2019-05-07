@@ -5,6 +5,7 @@ export const types = actionTypes('app')({
   ERROR: 'ERROR',
   INSTALLABLE: 'INSTALLABLE',
   INSTALL: 'INSTALL',
+  UPDATABLE: 'UPDATABLE',
 });
 
 export default {
@@ -23,4 +24,8 @@ export default {
   install: () => ({
     type: types.INSTALL,
   }),
+  updatable: (worker) => ({
+    type: types.UPDATABLE,
+    worker,
+  })
 };

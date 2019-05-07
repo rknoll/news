@@ -1,4 +1,5 @@
 import { put, takeEvery, select } from 'redux-saga/effects';
+import runtime from 'serviceworker-webpack-plugin/lib/runtime';
 import appActions, { types } from '../actions/app';
 import notificationActions from '../actions/notifications';
 import { eventChannel } from 'redux-saga';
@@ -21,6 +22,31 @@ function installable() {
     };
     window.addEventListener('beforeinstallprompt', listener);
     return () => window.removeEventListener('beforeinstallprompt', listener);
+  });
+}
+
+function updateAvailable() {
+  return eventChannel(emitter => {
+    if (!('serviceWorker' in navigator)) return () => {};
+
+    runtime.register().then(registration => {
+      registration.addEventListener('updatefound', () => {
+        const worker = registration.installing;
+        worker.addEventListener('statechange', () => {
+          if (worker.state !== 'installed') return;
+          if (!navigator.serviceWorker.controller) return;
+          emitter(appActions.updatable(worker));
+        });
+      });
+    });
+
+    const changeHandler = () => {
+      navigator.serviceWorker.removeEventListener('controllerchange', changeHandler);
+      window.location.reload();
+    };
+    navigator.serviceWorker.addEventListener('controllerchange', changeHandler);
+
+    return () => {};
   });
 }
 
@@ -54,4 +80,5 @@ export default () => [
   watchInstall(),
   forwardActions(gotMessage),
   forwardActions(installable),
+  forwardActions(updateAvailable),
 ];

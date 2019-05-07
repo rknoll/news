@@ -9,7 +9,7 @@ function* updateRequirements() {
 
   if (state.permissions.notifications === 'granted') requirements.notifications = true;
   if (state.permissions.notifications === 'denied') requirements.notifications = false;
-  requirements.serviceWorker = 'serviceWorker' in navigator;
+  requirements.serviceWorker = 'serviceWorker' in navigator && !!navigator.serviceWorker.controller;
   requirements.pushManager = 'PushManager' in window;
 
   yield put(requirementActions.updateRequirements(requirements));
