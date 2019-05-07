@@ -1,11 +1,15 @@
 import React from 'react';
+import dayjs from 'dayjs';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Typography from '@material-ui/core/Typography';
-import newsActions from '../store/actions/news';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
+import LocalizedFormat from 'dayjs/plugin/localizedFormat';
+import newsActions from '../store/actions/news';
+
+dayjs.extend(LocalizedFormat);
 
 const styles = () => ({
   notFound: {
@@ -27,15 +31,19 @@ const styles = () => ({
     overflow: 'auto',
   },
   image: {
-    borderRadius: '4px 0',
+    borderRadius: 4,
     float: 'left',
-    margin: '-24px 24px 24px -24px',
+    margin: '0 24px 24px 0',
   },
   title: {
     marginBottom: 24,
   },
   descriptionRow: {
     padding: '0 24px 24px 24px',
+  },
+  timestamp: {
+    textAlign: 'end',
+    marginTop: 8,
   },
 });
 
@@ -54,7 +62,7 @@ class NewsDetailsPage extends React.Component {
         Could not find news article.
       </Typography>
       <Button className={classes.homeButton} onClick={this.props.navigateHome}>
-        Go home23
+        Go home
       </Button>
     </div>;
 
@@ -70,8 +78,8 @@ class NewsDetailsPage extends React.Component {
           <Typography variant='body1'>
             {news.description}
           </Typography>
-          <Typography variant='caption'>
-            {news.timestamp}
+          <Typography variant='caption' className={classes.timestamp}>
+            {dayjs(news.timestamp).format('llll')}
           </Typography>
         </div>
       </Paper>
@@ -84,7 +92,7 @@ const mapStateToProps = ({ news }) => ({
 });
 
 export const mapDispatchToProps = (dispatch) => ({
-  refreshNews: () => dispatch(newsActions.newsListRequest()),
+  refreshNews: () => dispatch(newsActions.refreshNewsRequest()),
   navigateHome: () => dispatch(push('/')),
 });
 

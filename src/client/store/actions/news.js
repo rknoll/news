@@ -2,10 +2,11 @@ import actionTypes from '../../decorators/actionTypes';
 
 export const types = actionTypes('news')({
   SELECT: 'SELECT',
-  NEWS_LIST_REQUEST: 'NEWS_LIST_REQUEST',
-  NEWS_LIST_RESPONSE: 'NEWS_LIST_RESPONSE',
+  REFRESH_NEWS_REQUEST: 'REFRESH_NEWS_REQUEST',
+  REFRESH_NEWS_RESPONSE: 'REFRESH_NEWS_RESPONSE',
   PUSH_NEWS_REQUEST: 'PUSH_NEWS_REQUEST',
   PUSH_NEWS_RESPONSE: 'PUSH_NEWS_RESPONSE',
+  CLEAR_NEWS: 'CLEAR_NEWS',
 });
 
 export default {
@@ -13,11 +14,11 @@ export default {
     type: types.SELECT,
     id,
   }),
-  newsListRequest: () => ({
-    type: types.NEWS_LIST_REQUEST,
+  refreshNewsRequest: () => ({
+    type: types.REFRESH_NEWS_REQUEST,
   }),
-  newsListResponse: (data) => ({
-    type: types.NEWS_LIST_RESPONSE,
+  refreshNewsResponse: (data) => ({
+    type: types.REFRESH_NEWS_RESPONSE,
     data,
   }),
   pushNewsRequest: () => ({
@@ -26,5 +27,8 @@ export default {
   pushNewsResponse: (data) => ({
     type: types.PUSH_NEWS_RESPONSE,
     data,
+  }),
+  clearNews: () => ({
+    type: types.CLEAR_NEWS,
   }),
 };

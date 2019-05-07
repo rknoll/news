@@ -1,15 +1,15 @@
 import { put, takeEvery, call, select } from 'redux-saga/effects';
 import newsActions, { types } from '../actions/news';
 import appActions from '../actions/app';
-import { getAll } from '../../helpers/db';
+import { getAll, clear } from '../../helpers/db';
 import { pushNewsRequest } from '../../api';
 import request  from './request';
 
-function* getNewsList() {
+function* refreshNews() {
   yield put(appActions.loading(true));
   try {
     const news = yield call(getAll);
-    yield put(newsActions.newsListResponse(news));
+    yield put(newsActions.refreshNewsResponse(news));
   } catch (error) {
     yield put(appActions.error(error));
   } finally {
@@ -31,15 +31,32 @@ function* pushNews() {
   }
 }
 
-function* watchGetNewsList() {
-  yield takeEvery(types.NEWS_LIST_REQUEST, getNewsList);
+function* clearNews() {
+  yield put(appActions.loading(true));
+  try {
+    yield call(clear);
+    yield put(newsActions.refreshNewsRequest());
+  } catch (error) {
+    yield put(appActions.error(error));
+  } finally {
+    yield put(appActions.loading(false));
+  }
+}
+
+function* watchRefreshNews() {
+  yield takeEvery(types.REFRESH_NEWS_REQUEST, refreshNews);
 }
 
 function* watchPushNews() {
   yield takeEvery(types.PUSH_NEWS_REQUEST, pushNews);
 }
 
+function* watchClearNews() {
+  yield takeEvery(types.CLEAR_NEWS, clearNews);
+}
+
 export default () => [
-  watchGetNewsList(),
+  watchRefreshNews(),
   watchPushNews(),
+  watchClearNews(),
 ];

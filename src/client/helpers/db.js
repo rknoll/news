@@ -18,3 +18,14 @@ export const getAll = async () => {
   const db = await open();
   return db.getAll(collection);
 };
+
+export const clear = async () => {
+  const db = await open();
+  return db.clear(collection);
+};
+
+export default {
+  add,
+  getAll,
+  clear,
+};

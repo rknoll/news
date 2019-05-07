@@ -1,6 +1,6 @@
 import { newsRequest } from './api';
 import newsActions from './store/actions/news';
-import { add } from './helpers/db';
+import db  from './helpers/db';
 import { push } from 'connected-react-router';
 
 const cacheAssets = async (urls) => {
@@ -27,10 +27,11 @@ const queryAssetsCache = async (request) => {
 
 const handlePush = async (data) => {
   const news = await newsRequest(data.id);
-  await Promise.all([add(news), cacheAssets([news.imageUrl])]);
+  await Promise.all([db.add(news), cacheAssets([news.imageUrl])]);
 
   const clientList = await clients.matchAll({ type: 'window' });
-  clientList.forEach(client => client.postMessage(newsActions.newsListRequest()));
+  const refreshMessage = newsActions.refreshNewsRequest();
+  clientList.forEach(client => client.postMessage(refreshMessage));
 
   if ('index' in self.registration) {
     await self.registration.index.add({

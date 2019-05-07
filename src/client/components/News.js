@@ -38,7 +38,7 @@ const mapStateToProps = ({ news }) => ({
 });
 
 export const mapDispatchToProps = (dispatch) => ({
-  refreshNews: () => dispatch(newsActions.newsListRequest()),
+  refreshNews: () => dispatch(newsActions.refreshNewsRequest()),
 });
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(News));
