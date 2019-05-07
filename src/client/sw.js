@@ -3,10 +3,11 @@ import newsActions from './store/actions/news';
 import db  from './helpers/db';
 import { push } from 'connected-react-router';
 
+const imagesKey = 'news-images';
 const assetsKey = `news-assets-${ASSETS_VERSION}`;
 
-const cacheAssets = async (urls) => {
-  const cache = await caches.open(assetsKey);
+const cacheAssets = async (key, urls) => {
+  const cache = await caches.open(key);
   return cache.addAll(urls);
 };
 
@@ -35,7 +36,7 @@ const queryAssetsCache = async (request) => {
 
 const handlePush = async (data) => {
   const news = await newsRequest(data.id);
-  await Promise.all([db.add(news), cacheAssets([news.imageUrl])]);
+  await Promise.all([db.add(news), cacheAssets(imagesKey, [news.imageUrl])]);
 
   const clientList = await clients.matchAll({ type: 'window' });
   const refreshMessage = newsActions.refreshNewsRequest();
@@ -64,6 +65,7 @@ const handleMessage = async (event) => {
     case 'skipWaiting':
       return self.skipWaiting();
     case 'clearNews':
+      await caches.delete(imagesKey);
       if (!('index' in self.registration)) return;
       const entries = await self.registration.index.list();
       return Promise.all(entries.map(entry => self.registration.index.remove(entry.id)));
@@ -83,7 +85,7 @@ const handleClickEvent = async ({notification, action}) => {
   return clientList[0].focus();
 };
 
-self.addEventListener('install', event => event.waitUntil(cacheAssets(serviceWorkerOption.assets)));
+self.addEventListener('install', event => event.waitUntil(cacheAssets(assetsKey, serviceWorkerOption.assets)));
 self.addEventListener('activate', event => event.waitUntil(handleActivate()));
 self.addEventListener('fetch', event => event.respondWith(queryAssetsCache(event.request)));
 self.addEventListener('push', event => event.waitUntil(handlePush(event.data.json())));
