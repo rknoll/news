@@ -5,6 +5,7 @@ import { push } from 'connected-react-router';
 
 const imagesKey = 'news-images';
 const assetsKey = `news-assets-${ASSETS_VERSION}`;
+const allKeys = new Set([imagesKey, assetsKey]);
 
 const cacheAssets = async (key, urls) => {
   const cache = await caches.open(key);
@@ -14,12 +15,12 @@ const cacheAssets = async (key, urls) => {
 const handleActivate = async () => {
   await clients.claim();
   const cacheKeys = await caches.keys();
-  await Promise.all(cacheKeys.map(key => key !== assetsKey && caches.delete(key)));
+  const oldCacheKeys = cacheKeys.filter(key => !allKeys.has(key));
+  return Promise.all(oldCacheKeys.map(key => caches.delete(key)));
 };
 
 const queryAssetsCache = async (request) => {
-  const cache = await caches.open(assetsKey);
-  const match = await cache.match(request, {ignoreSearch: true});
+  const match = await caches.match(request, {ignoreSearch: true});
   if (match) return match;
 
   const url = new URL(request.url);
@@ -27,7 +28,7 @@ const queryAssetsCache = async (request) => {
       !url.pathname.startsWith('/api/') &&
       !url.pathname.endsWith('.hot-update.json') &&
       !url.pathname.endsWith('.hot-update.js')) {
-    const match = await cache.match('/index.html', {ignoreSearch: true});
+    const match = await caches.match('/index.html', {ignoreSearch: true});
     if (match) return match;
   }
 
