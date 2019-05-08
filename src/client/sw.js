@@ -1,6 +1,6 @@
 import { newsRequest } from './api';
 import newsActions from './store/actions/news';
-import db  from './helpers/db';
+import db from './helpers/db';
 import { push } from 'connected-react-router';
 
 const imagesKey = 'news-images';
@@ -36,7 +36,7 @@ const queryAssetsCache = async (request) => {
 
 const handlePush = async (data) => {
   const news = await newsRequest(data.id);
-  await Promise.all([db.add(news), cacheAssets(imagesKey, [news.imageUrl])]);
+  await Promise.all([db.add(news), cacheAssets(imagesKey, [news.iconUrl])]);
 
   const clientList = await clients.matchAll({ type: 'window' });
   const refreshMessage = newsActions.refreshNewsRequest();
@@ -48,7 +48,7 @@ const handlePush = async (data) => {
       title: news.title,
       description: news.description,
       category: 'article',
-      iconUrl: news.imageUrl,
+      iconUrl: news.iconUrl,
       launchUrl: `https://news.rknoll.at/news/${news.id}`,
     });
   }
@@ -56,8 +56,21 @@ const handlePush = async (data) => {
   return self.registration.showNotification(news.title, {
     tag: news.id,
     body: news.description,
-    icon: news.imageUrl,
+    icon: news.iconUrl,
   });
+};
+
+const closeNotifications = async () => {
+  const notifications = await self.registration.getNotifications();
+  console.log(notifications);
+  return Promise.all(notifications.map(notification => notification.close()));
+};
+
+const removeIndexEntries = async () => {
+  if ('index' in self.registration) {
+    const entries = await self.registration.index.list();
+    await Promise.all(entries.map(entry => self.registration.index.remove(entry.id)));
+  }
 };
 
 const handleMessage = async (event) => {
@@ -65,10 +78,11 @@ const handleMessage = async (event) => {
     case 'skipWaiting':
       return self.skipWaiting();
     case 'clearNews':
-      await caches.delete(imagesKey);
-      if (!('index' in self.registration)) return;
-      const entries = await self.registration.index.list();
-      return Promise.all(entries.map(entry => self.registration.index.remove(entry.id)));
+      return Promise.all([
+        caches.delete(imagesKey),
+        closeNotifications(),
+        removeIndexEntries(),
+      ]);
     default:
       return;
   }

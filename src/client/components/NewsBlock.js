@@ -50,7 +50,7 @@ const styles = theme => ({
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
   },
-  image: {
+  icon: {
     float: 'right',
     width: '40px',
     height: '40px',
@@ -69,7 +69,7 @@ const NewsBlock = (props) => {
   const { classes, selected, select, news } = props;
 
   const details = selected && <ExpansionPanelDetails className={classes.details}>
-    <img className={classes.image} src={news.imageUrl} />
+    <img className={classes.icon} src={news.iconUrl} />
     <Typography className={classes.description}>{news.description}</Typography>
   </ExpansionPanelDetails>;
 

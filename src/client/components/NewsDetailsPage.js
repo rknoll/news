@@ -30,7 +30,7 @@ const styles = () => ({
     padding: '24px 24px 0 24px',
     overflow: 'auto',
   },
-  image: {
+  icon: {
     borderRadius: 4,
     float: 'left',
     margin: '0 24px 24px 0',
@@ -69,7 +69,7 @@ class NewsDetailsPage extends React.Component {
     return (
       <Paper className={classes.root}>
         <div className={classes.titleRow}>
-          <img src={news.imageUrl} className={classes.image} />
+          <img src={news.iconUrl} className={classes.icon} />
           <Typography variant='h5' className={classes.title}>
             {news.title}
           </Typography>

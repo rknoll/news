@@ -2,10 +2,10 @@ import Router from 'express-promise-router';
 import { getNews, getRandomNews } from '../services/db';
 import { notify } from '../services/push';
 
-const addImageUrl = (news) => ({
+const addIconUrl = (news) => ({
   ...news,
   timestamp: new Date().toISOString(),
-  imageUrl: `/img/${news.id}`,
+  iconUrl: `/img/${news.id}`,
 });
 
 export default () => {
@@ -14,7 +14,7 @@ export default () => {
   router.get('/news/:id', async (req, res) => {
     console.log(`GET /api/news/${req.params.id}`);
     const news = await getNews(req.params.id);
-    res.send(addImageUrl(news));
+    res.send(addIconUrl(news));
   });
 
   router.post('/news', async (req, res) => {
