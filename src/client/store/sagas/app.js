@@ -63,8 +63,7 @@ function* installApp() {
   if (!event) return;
   yield put(appActions.installable(null));
   event.prompt();
-  const result = yield event.userChoice;
-  console.log(result);
+  yield event.userChoice;
 }
 
 function* watchError() {

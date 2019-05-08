@@ -62,7 +62,6 @@ const handlePush = async (data) => {
 
 const closeNotifications = async () => {
   const notifications = await self.registration.getNotifications();
-  console.log(notifications);
   return Promise.all(notifications.map(notification => notification.close()));
 };
 
