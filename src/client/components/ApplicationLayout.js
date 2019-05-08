@@ -5,6 +5,7 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import withStyles from '@material-ui/core/styles/withStyles';
 import AppBar from '@material-ui/core/AppBar';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -22,6 +23,11 @@ import newsActions from '../store/actions/news';
 import icon from '../assets/icon.png';
 
 const styles = (theme) => ({
+  "@keyframes opacityPulse": {
+    '0%': {opacity: 0.2},
+    '50%': {opacity: 0.5},
+    '100%': {opacity: 0.2},
+  },
   root: {
     flexGrow: 1,
     height: '100%',
@@ -67,13 +73,22 @@ const styles = (theme) => ({
     display: 'inline',
     verticalAlign: 'text-bottom',
   },
+  updateLoading: {
+    animation: 'opacityPulse 2s ease-out',
+    animationIterationCount: 'infinite',
+    opacity: 1,
+  },
+  installSpinner: {
+    position: 'absolute',
+  },
   titleText: {
     display: 'inline',
   },
 });
 
 const ApplicationLayout = (props) => {
-  const iconUpdate = !!props.updateWorker;
+  const iconUpdate = !!props.update.worker;
+  const updateLoading = props.update.loading;
   const iconInstall = !!props.installEvent;
   const iconPermission = props.notificationPermissions === 'default' || props.notificationPermissions === 'prompt';
   const iconPush = !iconPermission && props.hasSubscription;
@@ -92,8 +107,11 @@ const ApplicationLayout = (props) => {
             </div>
             <div>
               { iconUpdate &&
-              <IconButton color='inherit' onClick={() => props.updateApp(props.updateWorker)}>
-                <SystemUpdateIcon />
+              <IconButton color='inherit' onClick={() => props.updateApp(props.update.worker)}>
+                <SystemUpdateIcon className={updateLoading ? props.classes.updateLoading : ''} />
+                {updateLoading && <CircularProgress variant='indeterminate' color='inherit' size={24}
+                                  className={props.classes.installSpinner}/>
+                }
               </IconButton> }
               { iconInstall &&
               <IconButton color='inherit' onClick={props.installApp}>
@@ -132,7 +150,7 @@ const mapStateToProps = (state) => ({
   notificationPermissions: state.permissions.notifications,
   hasSubscription: !!state.push.subscription,
   installEvent: state.app.installEvent,
-  updateWorker: state.app.updateWorker,
+  update: state.app.update,
   hasNews: state.news.list && state.news.list.length !== 0,
 });
 

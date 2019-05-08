@@ -24,10 +24,7 @@ const queryAssetsCache = async (request) => {
   if (match) return match;
 
   const url = new URL(request.url);
-  if (!url.pathname.startsWith('/img/') &&
-      !url.pathname.startsWith('/api/') &&
-      !url.pathname.endsWith('.hot-update.json') &&
-      !url.pathname.endsWith('.hot-update.js')) {
+  if (url.pathname === '/' || url.pathname.startsWith('/news/')) {
     const match = await caches.match('/index.html', {ignoreSearch: true});
     if (match) return match;
   }

@@ -29,15 +29,30 @@ function updateAvailable() {
   return eventChannel(emitter => {
     if (!('serviceWorker' in navigator)) return () => {};
 
-    runtime.register().then(registration => {
-      registration.addEventListener('updatefound', () => {
-        const worker = registration.installing;
-        worker.addEventListener('statechange', () => {
-          if (worker.state !== 'installed') return;
-          if (!navigator.serviceWorker.controller) return;
-          emitter(appActions.updatable(worker));
-        });
+    const gotWorker = (worker) => {
+      emitter(appActions.updatable({
+        worker,
+        loading: true,
+      }));
+      worker.addEventListener('statechange', () => {
+        if (worker.state !== 'installed') return;
+        if (!navigator.serviceWorker.controller) return;
+        emitter(appActions.updatable({
+          worker,
+          loading: false,
+        }));
       });
+    };
+
+    const checkWorkers = (registration) => () => {
+      if (registration.installing) gotWorker(registration.installing);
+      if (registration.waiting) gotWorker(registration.waiting);
+    };
+
+    runtime.register().then(registration => {
+      const check = checkWorkers(registration);
+      registration.addEventListener('updatefound', check);
+      check();
     });
 
     const changeHandler = () => {

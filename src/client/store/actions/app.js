@@ -24,8 +24,9 @@ export default {
   install: () => ({
     type: types.INSTALL,
   }),
-  updatable: (worker) => ({
+  updatable: ({ worker, loading }) => ({
     type: types.UPDATABLE,
     worker,
+    loading,
   })
 };
