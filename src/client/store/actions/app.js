@@ -2,6 +2,7 @@ import actionTypes from '../../decorators/actionTypes';
 
 export const types = actionTypes('app')({
   LOADING: 'LOADING',
+  LONG_LOADING: 'LONG_LOADING',
   ERROR: 'ERROR',
   INSTALLABLE: 'INSTALLABLE',
   INSTALL: 'INSTALL',
@@ -12,6 +13,10 @@ export default {
   loading: (loading) => ({
     type: types.LOADING,
     loading,
+  }),
+  longLoading: (longLoading) => ({
+    type: types.LONG_LOADING,
+    longLoading,
   }),
   error: (error) => ({
     type: types.ERROR,

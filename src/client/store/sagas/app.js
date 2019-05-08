@@ -1,9 +1,12 @@
-import { put, takeEvery, select } from 'redux-saga/effects';
+import { put, takeEvery, select, take, race, delay } from 'redux-saga/effects';
 import runtime from 'serviceworker-webpack-plugin/lib/runtime';
 import appActions, { types } from '../actions/app';
 import notificationActions from '../actions/notifications';
 import { eventChannel } from 'redux-saga';
 import { forwardActions } from '../../helpers/sagas';
+import requirementActions from '../actions/requirements';
+
+const MIN_LOADING_MILLIS = 200;
 
 async function gotMessage() {
   return eventChannel(emitter => {
@@ -32,7 +35,7 @@ function updateAvailable() {
     const gotWorker = (worker) => {
       emitter(appActions.updatable({
         worker,
-        loading: true,
+        loading: worker.state === 'installing',
       }));
       worker.addEventListener('statechange', () => {
         if (worker.state !== 'installed') return;
@@ -55,9 +58,14 @@ function updateAvailable() {
       check();
     });
 
+    const isControlled = !!navigator.serviceWorker.controller;
     const changeHandler = () => {
-      navigator.serviceWorker.removeEventListener('controllerchange', changeHandler);
-      window.location.reload();
+      if (isControlled) {
+        navigator.serviceWorker.removeEventListener('controllerchange', changeHandler);
+        return window.location.reload();
+      }
+      emitter(requirementActions.checkRequirements());
+      emitter(appActions.updatable({ worker: null, loading: false }));
     };
     navigator.serviceWorker.addEventListener('controllerchange', changeHandler);
 
@@ -89,9 +97,31 @@ function* watchInstall() {
   yield takeEvery(types.INSTALL, installApp);
 }
 
+function* isLoading() {
+  const state = yield select();
+  return !!state.app.loading;
+}
+
+function* watchLoading() {
+  while (true) {
+    while (!(yield isLoading())) yield take(types.LOADING);
+    const endMillis = Date.now() + MIN_LOADING_MILLIS;
+
+    while (yield isLoading()) {
+      if (Date.now() >= endMillis) break;
+      yield race([take(types.LOADING), delay(endMillis - Date.now())]);
+    }
+
+    if (yield isLoading()) yield put(appActions.longLoading(true));
+    while (yield isLoading()) yield take(types.LOADING);
+    yield put(appActions.longLoading(false));
+  }
+}
+
 export default () => [
   watchError(),
   watchInstall(),
+  watchLoading(),
   forwardActions(gotMessage),
   forwardActions(installable),
   forwardActions(updateAvailable),

@@ -2,6 +2,7 @@ import { types } from '../actions/app';
 
 const initialState = {
   loading: 0,
+  longLoading: false,
   installEvent: null,
   update: {
     worker: null,
@@ -15,6 +16,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: state.loading + (action.loading ? 1 : -1),
+      };
+    case types.LONG_LOADING:
+      return {
+        ...state,
+        longLoading: action.longLoading,
       };
     case types.INSTALLABLE:
       return {

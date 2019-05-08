@@ -91,8 +91,8 @@ const ApplicationLayout = (props) => {
   const updateLoading = props.update.loading;
   const iconInstall = !!props.installEvent;
   const iconPermission = props.notificationPermissions === 'default' || props.notificationPermissions === 'prompt';
-  const iconPush = !iconPermission && props.hasSubscription;
-  const iconClear = iconPush && props.hasNews;
+  const iconPush = !iconPermission && props.hasSubscription && !!navigator.serviceWorker.controller;
+  const iconClear = props.hasNews;
 
   return (
     <React.Fragment>
@@ -133,7 +133,7 @@ const ApplicationLayout = (props) => {
               </IconButton> }
             </div>
           </Toolbar>
-          {props.loading !== 0 && <LinearProgress variant='indeterminate' classes={{ root: props.classes.loadingBar }} />}
+          {props.loading && <LinearProgress variant='indeterminate' classes={{ root: props.classes.loadingBar }} />}
         </AppBar>
         <Dialogs />
         <main className={props.classes.content}>
@@ -146,7 +146,7 @@ const ApplicationLayout = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  loading: state.app.loading,
+  loading: state.app.longLoading,
   notificationPermissions: state.permissions.notifications,
   hasSubscription: !!state.push.subscription,
   installEvent: state.app.installEvent,
