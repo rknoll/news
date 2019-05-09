@@ -34,6 +34,8 @@ const styles = () => ({
     borderRadius: 4,
     float: 'left',
     margin: '0 24px 24px 0',
+    width: 100,
+    height: 100,
   },
   title: {
     marginBottom: 24,
