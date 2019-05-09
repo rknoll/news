@@ -14,6 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
+import Button from '@material-ui/core/Button';
 import Notifications from '../components/Notifications';
 import Dialogs from './Dialogs';
 import mainTheme from '../theme';
@@ -63,15 +64,14 @@ const styles = (theme) => ({
     },
     minWidth: 0,
   },
-  title: {
-    cursor: 'pointer',
-  },
   icon: {
     width: 24,
     height: 24,
     marginRight: 16,
-    display: 'inline',
-    verticalAlign: 'text-bottom',
+  },
+  titleText: {
+    color: 'white',
+    textTransform: 'none',
   },
   updateLoading: {
     animation: 'opacityPulse 2s ease-out',
@@ -80,9 +80,6 @@ const styles = (theme) => ({
   },
   installSpinner: {
     position: 'absolute',
-  },
-  titleText: {
-    display: 'inline',
   },
 });
 
@@ -99,12 +96,12 @@ const ApplicationLayout = (props) => {
       <div className={props.classes.root}>
         <AppBar position='fixed' className={props.classes.appBar}>
           <Toolbar variant='dense' className={props.classes.toolbar}>
-            <div className={props.classes.title} onClick={props.navigateHome}>
+            <Button onClick={props.navigateHome}>
               <img src={icon} className={props.classes.icon} />
               <Typography variant='h6' color='inherit' noWrap={true} className={props.classes.titleText}>
                 News
               </Typography>
-            </div>
+            </Button>
             <div>
               { iconUpdate &&
               <IconButton color='inherit' onClick={() => props.updateApp(props.update.worker)}>
