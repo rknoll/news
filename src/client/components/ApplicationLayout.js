@@ -70,7 +70,6 @@ const styles = (theme) => ({
     marginRight: 16,
   },
   titleText: {
-    color: 'white',
     textTransform: 'none',
   },
   updateLoading: {
@@ -96,7 +95,7 @@ const ApplicationLayout = (props) => {
       <div className={props.classes.root}>
         <AppBar position='fixed' className={props.classes.appBar}>
           <Toolbar variant='dense' className={props.classes.toolbar}>
-            <Button onClick={props.navigateHome}>
+            <Button onClick={props.navigateHome} color='inherit'>
               <img src={icon} className={props.classes.icon} />
               <Typography variant='h6' color='inherit' noWrap={true} className={props.classes.titleText}>
                 News
