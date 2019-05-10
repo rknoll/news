@@ -19,9 +19,19 @@ export default () => {
 
   router.post('/news', async (req, res) => {
     console.log('POST /api/news');
-    const { silent, subscription } = req.body;
+    const { silent, delay, subscription } = req.body;
     const news = await getRandomNews();
-    await notify(subscription, { id: news.id, silent });
+    if (delay) {
+      setTimeout(async () => {
+        try {
+          await notify(subscription, { id: news.id, silent });
+        } catch (error) {
+          console.log(error && error.message || error);
+        }
+      }, delay * 1000);
+    } else {
+      await notify(subscription, { id: news.id, silent });
+    }
     res.send({ success: true });
   });
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React  from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
@@ -24,6 +24,7 @@ import dialogActions, {DIALOGS} from '../store/actions/dialogs';
 import appActions from '../store/actions/app';
 import newsActions from '../store/actions/news';
 import icon from '../assets/icon.png';
+import LongPressIconButton from './LongPressIconButton';
 
 const styles = (theme) => ({
   "@keyframes opacityPulse": {
@@ -84,6 +85,16 @@ const styles = (theme) => ({
   },
 });
 
+const handleDebug = async () => {
+  const registration = await navigator.serviceWorker.ready;
+  const notifications = await registration.getNotifications();
+  const data = notifications.map(({title, body}) => ({
+    title,
+    body,
+  }));
+  alert(JSON.stringify(data));
+};
+
 const ApplicationLayout = (props) => {
   const iconUpdate = !!props.update.worker;
   const updateLoading = props.update.loading;
@@ -92,14 +103,11 @@ const ApplicationLayout = (props) => {
   const iconPush = !iconPermission && props.hasSubscription && !!navigator.serviceWorker.controller;
   const iconClear = props.hasNews;
 
-  const handleDebug = async () => {
-    const registration = await navigator.serviceWorker.ready;
-    const notifications = await registration.getNotifications();
-    const data = notifications.map(({title, body}) => ({
-      title,
-      body,
-    }));
-    alert(JSON.stringify(data ));
+  const delayValues = {
+    0: 'Now',
+    5: 'In 5 Seconds',
+    10: 'In 10 Seconds',
+    60: 'In 1 Minute',
   };
 
   return (
@@ -117,9 +125,7 @@ const ApplicationLayout = (props) => {
               <IconButton color='inherit' onClick={handleDebug}>
                 <BugReportIcon />
               </IconButton>
-              <IconButton color='inherit' onClick={() => props.pushNews(true)}>
-                <VisibilityOffIcon />
-              </IconButton>
+              <LongPressIconButton icon={<VisibilityOffIcon />} onClick={props.pushNews(true)} values={delayValues} />
               { iconUpdate &&
               <IconButton color='inherit' onClick={() => props.updateApp(props.update.worker)}>
                 <SystemUpdateIcon className={updateLoading ? props.classes.updateLoading : ''} />
@@ -141,10 +147,9 @@ const ApplicationLayout = (props) => {
               <IconButton color='inherit' onClick={props.clearNews}>
                 <DeleteIcon />
               </IconButton> }
-              { iconPush &&
-              <IconButton color='inherit' onClick={() => props.pushNews(false)}>
-                <NotificationsIcon />
-              </IconButton> }
+              { iconPush && <LongPressIconButton
+                icon={<NotificationsIcon />} onClick={props.pushNews(false)} values={delayValues} />
+              }
             </div>
           </Toolbar>
           {props.loading && <LinearProgress variant='indeterminate' classes={{ root: props.classes.loadingBar }} />}
@@ -171,7 +176,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   showNotificationDialog: () => dispatch(dialogActions.show(DIALOGS.NOTIFICATIONS)),
   clearNews: () => dispatch(newsActions.clearNews()),
-  pushNews: (silent) => dispatch(newsActions.pushNewsRequest(silent)),
+  pushNews: (silent) => (delay) => dispatch(newsActions.pushNewsRequest(silent, delay)),
   installApp: () => dispatch(appActions.install()),
   navigateHome: () => dispatch(push('/')),
   updateApp: (worker) => worker.postMessage({ action: 'skipWaiting' }),

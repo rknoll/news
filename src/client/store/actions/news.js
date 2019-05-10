@@ -21,9 +21,10 @@ export default {
     type: types.REFRESH_NEWS_RESPONSE,
     data,
   }),
-  pushNewsRequest: (silent) => ({
+  pushNewsRequest: (silent, delay) => ({
     type: types.PUSH_NEWS_REQUEST,
     silent,
+    delay: parseInt(delay) || 0,
   }),
   pushNewsResponse: (data) => ({
     type: types.PUSH_NEWS_RESPONSE,

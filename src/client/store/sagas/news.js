@@ -17,12 +17,12 @@ function* refreshNews() {
   }
 }
 
-function* pushNews({ silent }) {
+function* pushNews({ silent, delay }) {
   yield put(appActions.loading(true));
   try {
     const state = yield select();
     const subscription = state.push.subscription;
-    const response = yield request(pushNewsRequest, { subscription, silent });
+    const response = yield request(pushNewsRequest, { subscription, silent, delay });
     yield put(newsActions.pushNewsResponse(response));
   } catch (error) {
     yield put(appActions.error(error));
