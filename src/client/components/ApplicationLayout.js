@@ -142,7 +142,7 @@ const ApplicationLayout = (props) => {
                 <DeleteIcon />
               </IconButton> }
               { iconPush &&
-              <IconButton color='inherit' onClick={props.pushNews}>
+              <IconButton color='inherit' onClick={() => props.pushNews(false)}>
                 <NotificationsIcon />
               </IconButton> }
             </div>
@@ -171,7 +171,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   showNotificationDialog: () => dispatch(dialogActions.show(DIALOGS.NOTIFICATIONS)),
   clearNews: () => dispatch(newsActions.clearNews()),
-  pushNews: (silent = false) => dispatch(newsActions.pushNewsRequest(silent)),
+  pushNews: (silent) => dispatch(newsActions.pushNewsRequest(silent)),
   installApp: () => dispatch(appActions.install()),
   navigateHome: () => dispatch(push('/')),
   updateApp: (worker) => worker.postMessage({ action: 'skipWaiting' }),
