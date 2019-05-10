@@ -12,6 +12,8 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import AddToHomeScreenIcon from '@material-ui/icons/AddToHomeScreen';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SystemUpdateIcon from '@material-ui/icons/SystemUpdate';
+import BugReportIcon from '@material-ui/icons/BugReport';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
@@ -90,6 +92,16 @@ const ApplicationLayout = (props) => {
   const iconPush = !iconPermission && props.hasSubscription && !!navigator.serviceWorker.controller;
   const iconClear = props.hasNews;
 
+  const handleDebug = async () => {
+    const registration = await navigator.serviceWorker.ready;
+    const notifications = await registration.getNotifications();
+    const data = notifications.map(({title, body}) => ({
+      title,
+      body,
+    }));
+    alert(JSON.stringify(data ));
+  };
+
   return (
     <React.Fragment>
       <div className={props.classes.root}>
@@ -102,6 +114,12 @@ const ApplicationLayout = (props) => {
               </Typography>
             </Button>
             <div>
+              <IconButton color='inherit' onClick={handleDebug}>
+                <BugReportIcon />
+              </IconButton>
+              <IconButton color='inherit' onClick={() => props.pushNews(true)}>
+                <VisibilityOffIcon />
+              </IconButton>
               { iconUpdate &&
               <IconButton color='inherit' onClick={() => props.updateApp(props.update.worker)}>
                 <SystemUpdateIcon className={updateLoading ? props.classes.updateLoading : ''} />
@@ -153,7 +171,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   showNotificationDialog: () => dispatch(dialogActions.show(DIALOGS.NOTIFICATIONS)),
   clearNews: () => dispatch(newsActions.clearNews()),
-  pushNews: () => dispatch(newsActions.pushNewsRequest()),
+  pushNews: (silent = false) => dispatch(newsActions.pushNewsRequest(silent)),
   installApp: () => dispatch(appActions.install()),
   navigateHome: () => dispatch(push('/')),
   updateApp: (worker) => worker.postMessage({ action: 'skipWaiting' }),

@@ -51,6 +51,7 @@ const handlePush = async (data) => {
     });
   }
 
+  if (data.silent) return;
   return self.registration.showNotification(news.title, {
     tag: news.id,
     body: news.description,
