@@ -34,8 +34,7 @@ const queryAssetsCache = async (request) => {
   return fetch(request);
 };
 
-const handlePush = async (data) => {
-  const news = await newsRequest(data.id);
+const addNews = async (news, notify) => {
   await Promise.all([db.add(news), cacheAssets(imagesKey, [news.iconUrl])]);
 
   const clientList = await clients.matchAll({ type: 'window' });
@@ -53,12 +52,18 @@ const handlePush = async (data) => {
     });
   }
 
-  if (data.silent) return;
-  return self.registration.showNotification(news.title, {
-    tag: news.id,
-    body: news.description,
-    icon: news.iconUrl,
-  });
+  if (notify) {
+    await self.registration.showNotification(news.title, {
+      tag: news.id,
+      body: news.description,
+      icon: news.iconUrl,
+    });
+  }
+};
+
+const handlePush = async (data) => {
+  const news = await newsRequest(data.id);
+  return addNews(news, !data.silent);
 };
 
 const closeNotifications = async () => {
@@ -73,7 +78,7 @@ const removeIndexEntries = async () => {
   }
 };
 
-const createNews = async ({ title, description }) => {
+const createNews = ({ title, description }) => {
   const id = uuid();
   const news = {
     id,
@@ -82,22 +87,7 @@ const createNews = async ({ title, description }) => {
     iconUrl: iconRed,
     timestamp: new Date().toISOString(),
   };
-  await db.add(news);
-
-  const clientList = await clients.matchAll({ type: 'window' });
-  const refreshMessage = newsActions.refreshNewsRequest();
-  clientList.forEach(client => client.postMessage(refreshMessage));
-
-  if ('index' in self.registration) {
-    await self.registration.index.add({
-      id: news.id,
-      title: news.title,
-      description: news.description,
-      category: 'article',
-      iconUrl: news.iconUrl,
-      launchUrl: `https://news.rknoll.at/news/${news.id}`,
-    });
-  }
+  return addNews(news, false);
 };
 
 const handleMessage = (event) => {

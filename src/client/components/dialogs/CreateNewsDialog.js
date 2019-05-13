@@ -71,7 +71,7 @@ export default class extends React.Component {
     }
   }
 
-  handleCreateBackup = (event) => {
+  handleCreateNews = (event) => {
     event.preventDefault();
     if (this.isBlocked()) return;
     this.props.createNews({
@@ -91,45 +91,47 @@ export default class extends React.Component {
 
     return <Dialog open={open} fullScreen={fullScreen} fullWidth={true}
                    maxWidth={fullScreen ? false : 'xs'}>
-      <DialogTitle className={classes.title} disableTypography={true}>
-        <Typography variant='h6' color='inherit'>
-          Create news
-        </Typography>
-        <IconButton aria-label="Close" className={classes.closeButton} onClick={hideCreateNewsDialog}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent className={classes.content}>
-        <TextField
-          disabled={loading}
-          autoFocus={true}
-          margin='dense'
-          id='title'
-          label='Title'
-          type='text'
-          placeholder='Title'
-          defaultValue={title}
-          fullWidth={true}
-          onChange={this.handleTitleChange}
-        />
-        <TextField
-          disabled={loading}
-          margin='dense'
-          id='description'
-          label='Description'
-          type='text'
-          placeholder='Description'
-          defaultValue={description}
-          fullWidth={true}
-          onChange={this.handleDescriptionChange}
-        />
-      </DialogContent>
-      <DialogActions className={classes.actions}>
-        <Button onClick={this.handleCreateBackup} color="primary" disabled={blocked}>
-          Create
-        </Button>
-      </DialogActions>
-      {loading && <LinearProgress variant='indeterminate' />}
+      <form onSubmit={this.handleCreateNews}>
+        <DialogTitle className={classes.title} disableTypography={true}>
+          <Typography variant='h6' color='inherit'>
+            Create news
+          </Typography>
+          <IconButton aria-label="Close" className={classes.closeButton} onClick={hideCreateNewsDialog}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent className={classes.content}>
+          <TextField
+            disabled={loading}
+            autoFocus={true}
+            margin='dense'
+            id='title'
+            label='Title'
+            type='text'
+            placeholder='Title'
+            defaultValue={title}
+            fullWidth={true}
+            onChange={this.handleTitleChange}
+          />
+          <TextField
+            disabled={loading}
+            margin='dense'
+            id='description'
+            label='Description'
+            type='text'
+            placeholder='Description'
+            defaultValue={description}
+            fullWidth={true}
+            onChange={this.handleDescriptionChange}
+          />
+        </DialogContent>
+        <DialogActions className={classes.actions}>
+          <Button onClick={this.handleCreateNews} color="primary" disabled={blocked}>
+            Create
+          </Button>
+        </DialogActions>
+        {loading && <LinearProgress variant='indeterminate' />}
+      </form>
     </Dialog>;
   }
 }
