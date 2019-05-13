@@ -126,7 +126,7 @@ export default class extends React.Component {
           />
         </DialogContent>
         <DialogActions className={classes.actions}>
-          <Button onClick={this.handleCreateNews} color="primary" disabled={blocked}>
+          <Button onClick={this.handleCreateNews} color="primary" disabled={blocked} type='submit'>
             Create
           </Button>
         </DialogActions>

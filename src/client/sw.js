@@ -11,7 +11,11 @@ const allKeys = new Set([imagesKey, assetsKey]);
 
 const cacheAssets = async (key, urls) => {
   const cache = await caches.open(key);
-  return cache.addAll(urls);
+  try {
+    return await cache.addAll(urls);
+  } catch (error) {
+    console.log(error && error.message || error);
+  }
 };
 
 const handleActivate = async () => {
