@@ -7,6 +7,7 @@ export const types = actionTypes('news')({
   PUSH_NEWS_REQUEST: 'PUSH_NEWS_REQUEST',
   PUSH_NEWS_RESPONSE: 'PUSH_NEWS_RESPONSE',
   CLEAR_NEWS: 'CLEAR_NEWS',
+  CREATE_NEWS: 'CREATE_NEWS',
 });
 
 export default {
@@ -32,5 +33,9 @@ export default {
   }),
   clearNews: () => ({
     type: types.CLEAR_NEWS,
+  }),
+  createNews: (data) => ({
+    type: types.CREATE_NEWS,
+    data,
   }),
 };

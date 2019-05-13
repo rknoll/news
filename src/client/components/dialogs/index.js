@@ -1,12 +1,14 @@
 import React from 'react';
 import RequirementsDialog from './RequirementsDialog';
 import NotificationsDialog from './NotificationsDialog';
+import CreateNewsDialog from './CreateNewsDialog';
 
-const Dialogs = () => (
+const Index = () => (
   <React.Fragment>
     <RequirementsDialog/>
     <NotificationsDialog/>
+    <CreateNewsDialog/>
   </React.Fragment>
 );
 
-export default Dialogs;
+export default Index;

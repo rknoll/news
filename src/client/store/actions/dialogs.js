@@ -10,6 +10,7 @@ export const types = actionTypes('dialogs')({
 export const DIALOGS = {
   REQUIREMENTS: 'REQUIREMENTS',
   NOTIFICATIONS: 'NOTIFICATIONS',
+  CREATE_NEWS: 'CREATE_NEWS',
 };
 
 export default {

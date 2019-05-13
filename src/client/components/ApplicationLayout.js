@@ -1,7 +1,6 @@
 import React  from 'react';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import withStyles from '@material-ui/core/styles/withStyles';
 import AppBar from '@material-ui/core/AppBar';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -18,8 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
 import Notifications from '../components/Notifications';
-import Dialogs from './Dialogs';
-import mainTheme from '../theme';
+import Dialogs from './dialogs';
 import dialogActions, {DIALOGS} from '../store/actions/dialogs';
 import appActions from '../store/actions/app';
 import newsActions from '../store/actions/news';
@@ -127,7 +125,7 @@ const ApplicationLayout = (props) => {
               </IconButton>
               <LongPressIconButton icon={<VisibilityOffIcon />} onClick={props.pushNews(true)} values={delayValues} />
               { iconUpdate &&
-              <IconButton color='inherit' onClick={() => props.updateApp(props.update.worker)}>
+              <IconButton color='inherit' onClick={() => !updateLoading && props.updateApp(props.update.worker)}>
                 <SystemUpdateIcon className={updateLoading ? props.classes.updateLoading : ''} />
                 {updateLoading && <CircularProgress variant='indeterminate' color='inherit' size={24}
                                   className={props.classes.installSpinner}/>
@@ -182,8 +180,4 @@ const mapDispatchToProps = (dispatch) => ({
   updateApp: (worker) => worker.postMessage({ action: 'skipWaiting' }),
 });
 
-const StyledApp = withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ApplicationLayout));
-
-export default (props) => <MuiThemeProvider theme={mainTheme}>
-  <StyledApp {...props} />
-</MuiThemeProvider>;
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(ApplicationLayout));

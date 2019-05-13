@@ -26,6 +26,7 @@ const config = (api) => {
   return {
     presets: getCommonConfig(process.env.IS_WEBPACK === 'true' ? { browsers } : { node }),
     plugins: [
+      ['@babel/plugin-proposal-decorators', { legacy: true }],
       '@babel/plugin-proposal-class-properties',
     ]
   };

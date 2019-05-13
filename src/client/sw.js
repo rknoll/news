@@ -2,6 +2,8 @@ import { newsRequest } from './api';
 import newsActions from './store/actions/news';
 import db from './helpers/db';
 import { push } from 'connected-react-router';
+import uuid from 'uuid/v1';
+import iconRed from './assets/icon-red.png';
 
 const imagesKey = 'news-images';
 const assetsKey = `news-assets-${ASSETS_VERSION}`;
@@ -71,7 +73,34 @@ const removeIndexEntries = async () => {
   }
 };
 
-const handleMessage = async (event) => {
+const createNews = async ({ title, description }) => {
+  const id = uuid();
+  const news = {
+    id,
+    title,
+    description,
+    iconUrl: iconRed,
+    timestamp: new Date().toISOString(),
+  };
+  await db.add(news);
+
+  const clientList = await clients.matchAll({ type: 'window' });
+  const refreshMessage = newsActions.refreshNewsRequest();
+  clientList.forEach(client => client.postMessage(refreshMessage));
+
+  if ('index' in self.registration) {
+    await self.registration.index.add({
+      id: news.id,
+      title: news.title,
+      description: news.description,
+      category: 'article',
+      iconUrl: news.iconUrl,
+      launchUrl: `https://news.rknoll.at/news/${news.id}`,
+    });
+  }
+};
+
+const handleMessage = (event) => {
   switch (event.data.action) {
     case 'skipWaiting':
       return self.skipWaiting();
@@ -81,6 +110,8 @@ const handleMessage = async (event) => {
         closeNotifications(),
         removeIndexEntries(),
       ]);
+    case 'createNews':
+      return createNews(event.data.data);
     default:
       return;
   }

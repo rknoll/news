@@ -4,8 +4,8 @@ import withMobileDialog from '@material-ui/core/withMobileDialog';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { DIALOGS } from '../store/actions/dialogs';
-import requirementActions from '../store/actions/requirements';
+import { DIALOGS } from '../../store/actions/dialogs';
+import requirementActions from '../../store/actions/requirements';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -32,7 +32,19 @@ const styles = (theme) => ({
   },
 });
 
-export class RequirementsDialog extends React.Component {
+const mapStateToProps = ({ dialogs, requirements }) => ({
+  ...dialogs[DIALOGS.REQUIREMENTS],
+  requirements,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  checkRequirements: () => dispatch(requirementActions.checkRequirements()),
+});
+
+@withStyles(styles)
+@withMobileDialog({ breakpoint: 'xs' })
+@connect(mapStateToProps, mapDispatchToProps)
+export default class extends React.Component {
   state = defaultState;
 
   static getDerivedStateFromProps({ show }, state) {
@@ -85,14 +97,3 @@ export class RequirementsDialog extends React.Component {
     </Dialog>;
   }
 }
-
-const mapStateToProps = ({ dialogs, requirements }) => ({
-  ...dialogs[DIALOGS.REQUIREMENTS],
-  requirements,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  checkRequirements: () => dispatch(requirementActions.checkRequirements()),
-});
-
-export default withStyles(styles)(withMobileDialog({ breakpoint: 'xs' })(connect(mapStateToProps, mapDispatchToProps)(RequirementsDialog)));

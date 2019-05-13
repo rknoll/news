@@ -1,5 +1,6 @@
 import { put, takeEvery, call, select } from 'redux-saga/effects';
 import newsActions, { types } from '../actions/news';
+import dialogActions, { DIALOGS } from '../actions/dialogs';
 import appActions from '../actions/app';
 import { getAll, clear } from '../../helpers/db';
 import { pushNewsRequest } from '../../api';
@@ -44,6 +45,16 @@ function* clearNews() {
   }
 }
 
+function* createNews({ data }) {
+  yield put(dialogActions.submit(DIALOGS.CREATE_NEWS));
+  try {
+    navigator.serviceWorker.controller.postMessage({ action: 'createNews', data });
+    yield put(dialogActions.hide(DIALOGS.CREATE_NEWS));
+  } catch (error) {
+    yield put(dialogActions.error(error));
+  }
+}
+
 function* watchRefreshNews() {
   yield takeEvery(types.REFRESH_NEWS_REQUEST, refreshNews);
 }
@@ -56,8 +67,13 @@ function* watchClearNews() {
   yield takeEvery(types.CLEAR_NEWS, clearNews);
 }
 
+function* watchCreateNews() {
+  yield takeEvery(types.CREATE_NEWS, createNews);
+}
+
 export default () => [
   watchRefreshNews(),
   watchPushNews(),
   watchClearNews(),
+  watchCreateNews(),
 ];

@@ -4,8 +4,8 @@ import withMobileDialog from '@material-ui/core/withMobileDialog';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import dialogActions, { DIALOGS } from '../store/actions/dialogs';
-import permissionActions from '../store/actions/permissions';
+import dialogActions, { DIALOGS } from '../../store/actions/dialogs';
+import permissionActions from '../../store/actions/permissions';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -23,12 +23,6 @@ const styles = (theme) => ({
     margin: 0,
     padding: theme.spacing.unit * 2,
   },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing.unit,
-    top: theme.spacing.unit,
-    color: theme.palette.grey[500],
-  },
   content: {
     margin: 0,
     padding: theme.spacing.unit * 2,
@@ -38,9 +32,27 @@ const styles = (theme) => ({
     margin: 0,
     padding: theme.spacing.unit,
   },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing.unit,
+    top: theme.spacing.unit,
+    color: theme.palette.grey[500],
+  },
 });
 
-export class NotificationsDialog extends React.Component {
+const mapStateToProps = ({ dialogs }) => ({
+  ...dialogs[DIALOGS.NOTIFICATIONS],
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  closeNotificationsDialog: () => dispatch(dialogActions.hide(DIALOGS.NOTIFICATIONS)),
+  requestPermissions: () => dispatch(permissionActions.requestPermissions()),
+});
+
+@withStyles(styles)
+@withMobileDialog({ breakpoint: 'xs' })
+@connect(mapStateToProps, mapDispatchToProps)
+export default class extends React.Component {
   state = defaultState;
 
   static getDerivedStateFromProps({ show }, state) {
@@ -83,14 +95,3 @@ export class NotificationsDialog extends React.Component {
     </Dialog>;
   }
 }
-
-const mapStateToProps = ({ dialogs }) => ({
-  ...dialogs[DIALOGS.NOTIFICATIONS],
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  closeNotificationsDialog: () => dispatch(dialogActions.hide(DIALOGS.NOTIFICATIONS)),
-  requestPermissions: () => dispatch(permissionActions.requestPermissions()),
-});
-
-export default withStyles(styles)(withMobileDialog({ breakpoint: 'xs' })(connect(mapStateToProps, mapDispatchToProps)(NotificationsDialog)));

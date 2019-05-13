@@ -84,12 +84,12 @@ const config = {
       silent: true,
     }),
     new WebappWebpackPlugin({
-      logo: path.join(__dirname, 'src/client/assets/icon.png'),
+      logo: path.join(__dirname, 'src/client/assets/icon-red.png'),
       favicons: {
         appName: 'News',
         appleStatusBarStyle: 'black',
         theme_color: '#b71c1c',
-        background: '#b71c1c',
+        background: '#ffffff',
         start_url: '/',
       },
     }),
