@@ -83,7 +83,14 @@ const styles = (theme) => ({
   },
 });
 
-const handleDebug = async () => {
+const debugValues = {
+  'NOTIFICATIONS': 'List notifications',
+};
+if (ServiceWorkerRegistration.prototype.hasOwnProperty('index')) {
+  debugValues['CONTENT_INDEX'] = 'List content index';
+}
+
+const handleDebugNotifications = async () => {
   const registration = await navigator.serviceWorker.ready;
   const notifications = await registration.getNotifications();
   const data = notifications.map(({title, body}) => ({
@@ -91,6 +98,21 @@ const handleDebug = async () => {
     body,
   }));
   alert(JSON.stringify(data));
+};
+
+const handleDebugContentIndex = async () => {
+  const registration = await navigator.serviceWorker.ready;
+  const entries = await registration.index.list();
+  alert(JSON.stringify(entries));
+};
+
+const handleDebug = (selection) => {
+  const handlers = {
+    'NOTIFICATIONS': handleDebugNotifications,
+    'CONTENT_INDEX': handleDebugContentIndex,
+  };
+  const handler = handlers[selection || 'NOTIFICATIONS'];
+  return handler && handler();
 };
 
 const ApplicationLayout = (props) => {
@@ -120,9 +142,7 @@ const ApplicationLayout = (props) => {
               </Typography>
             </Button>
             <div>
-              <IconButton color='inherit' onClick={handleDebug}>
-                <BugReportIcon />
-              </IconButton>
+              <LongPressIconButton icon={<BugReportIcon />} onClick={handleDebug} values={debugValues} />
               <LongPressIconButton icon={<VisibilityOffIcon />} onClick={props.pushNews(true)} values={delayValues} />
               { iconUpdate &&
               <IconButton color='inherit' onClick={() => !updateLoading && props.updateApp(props.update.worker)}>
