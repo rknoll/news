@@ -2,6 +2,7 @@ import express from 'express';
 import compression from 'compression';
 import path from 'path';
 import bodyParser from 'body-parser';
+import wellKnownRouter from './routers/wellKnown';
 import apiRouter from './routers/api';
 import imgRouter from './routers/img';
 import errorMiddleware from './middlewares/errorMiddleware';
@@ -17,6 +18,7 @@ app
   .use(compression());
 
 app
+  .use('/.well-known', wellKnownRouter())
   .use('/api', apiRouter(), errorMiddleware())
   .use('/img', imgRouter());
 
