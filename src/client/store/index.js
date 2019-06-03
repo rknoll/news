@@ -10,7 +10,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export const history = createBrowserHistory();
 
 const routerMiddleware = createRouterMiddleware(history);
-const loggerMiddleware = process.env.NODE_ENV === 'development' && createLoggerMiddleware();
+const loggerMiddleware = /*process.env.NODE_ENV === 'development' &&*/ createLoggerMiddleware();
 const sagaMiddleware = createSagaMiddleware();
 
 const middlewares = [
