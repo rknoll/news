@@ -5,6 +5,12 @@ const vapidKeys = {
   privateKey: process.env.WEBPUSH__PRIVATE_KEY
 };
 
+const options = {
+  headers: {
+    'Urgency': 'high',
+  },
+};
+
 webpush.setVapidDetails(
   'mailto:richard@rknoll.at',
   vapidKeys.publicKey,
@@ -14,7 +20,7 @@ webpush.setVapidDetails(
 export const notify = async (subscription, data) => {
   console.log('Notifying..');
   try {
-    await webpush.sendNotification(subscription, JSON.stringify(data));
+    await webpush.sendNotification(subscription, JSON.stringify(data), options);
     console.log('Notify done.');
     return true;
   } catch (error) {
