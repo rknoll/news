@@ -5,8 +5,11 @@ import appActions from '../actions/app';
 import { urlBase64ToUint8Array } from '../../helpers/encoding';
 
 async function subscribe() {
+  console.log('In subscribe(), waiting for navigator.serviceWorker.ready');
   const registration = await navigator.serviceWorker.ready;
+  console.log('In subscribe(), waiting for registration.pushManager.getSubscription');
   const subscription = await registration.pushManager.getSubscription();
+  console.log('In subscribe(), done!');
   return subscription || registration.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: urlBase64ToUint8Array(process.env.WEBPUSH__PUBLIC_KEY),
