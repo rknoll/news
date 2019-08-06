@@ -106,6 +106,8 @@ const handleMessage = (event) => {
       ]);
     case 'createNews':
       return createNews(event.data.data);
+    case 'closeNotifications':
+      return closeNotifications();
     default:
       return;
   }
