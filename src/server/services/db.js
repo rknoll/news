@@ -17,20 +17,25 @@ const connect = async () => {
 
 const convertNews = ({_id: id, ...news }) => ({ ...news, id });
 
+let existingTitles = null;
+const getExistingTitles = async (collection) => {
+  if (existingTitles) return existingTitles;
+  const existing = await collection.find({}).project({ title: 1 }).toArray();
+  existingTitles = new Set(existing.map(n => n.title));
+  return existingTitles;
+};
+
 export const insertNews = async (news) => {
   const client = await connect();
   try {
     const collection = client.db(database).collection('news');
-    const newsTitles = news.map(n => n.title);
-    const existing = await collection.find({
-      title: { $in: newsTitles }
-    }).project({ title: 1 }).toArray();
-    const existingTitles = new Set(existing.map(n => n.title));
-    const newNews = news.filter(n => !existingTitles.has(n.title));
+    const existing = await getExistingTitles(collection);
+    const newNews = news.filter(n => !existing.has(n.title));
     if (!newNews.length) {
       console.log('No new news inserted.');
       return;
     }
+    newNews.forEach(n => existingTitles.add(n.title));
     const result = await collection.insertMany(newNews);
     console.log(`Inserted ${result.insertedCount} news.`);
   } finally {
