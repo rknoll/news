@@ -22,13 +22,14 @@ app
   .use('/api', apiRouter(), errorMiddleware())
   .use('/img', imgRouter());
 
+app.use((req, res, next) => {
+  res.set('Origin-Trial', 'AmRML4eQ7EYkH3h2gxrjfsjcdUBG/qcAbE7nTr6jsNcZ0wlRWZNGKdvmvQt9WuajpoqIlNbzLI4R4DSnDZqMxwQAAABUeyJvcmlnaW4iOiJodHRwczovL25ld3Mucmtub2xsLmF0OjQ0MyIsImZlYXR1cmUiOiJDb250ZW50SW5kZXgiLCJleHBpcnkiOjE1ODE2MDkzMjR9');
+  next();
+});
+
 app
   .use(express.static(statics))
-  .get('*', (req, res) => {
-    // ContentIndex
-    res.set('Origin-Trial', 'AmRML4eQ7EYkH3h2gxrjfsjcdUBG/qcAbE7nTr6jsNcZ0wlRWZNGKdvmvQt9WuajpoqIlNbzLI4R4DSnDZqMxwQAAABUeyJvcmlnaW4iOiJodHRwczovL25ld3Mucmtub2xsLmF0OjQ0MyIsImZlYXR1cmUiOiJDb250ZW50SW5kZXgiLCJleHBpcnkiOjE1ODE2MDkzMjR9');
-    return res.sendFile(path.join(statics, 'index.html'));
-  });
+  .get('*', (req, res) => res.sendFile(path.join(statics, 'index.html')));
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));
 
