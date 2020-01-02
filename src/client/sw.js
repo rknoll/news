@@ -51,7 +51,13 @@ const addNews = async (news, notify) => {
       title: news.title,
       description: news.description,
       category: 'article',
-      iconUrl: news.iconUrl,
+      icons: [
+        {
+          src: news.iconUrl,
+          sizes: '64x64',
+          type: 'image/png',
+        },
+      ],
       launchUrl: `https://news.rknoll.at/news/${news.id}`,
     });
   }
@@ -77,8 +83,8 @@ const closeNotifications = async () => {
 
 const removeIndexEntries = async () => {
   if ('index' in self.registration) {
-    const entries = await self.registration.index.list();
-    await Promise.all(entries.map(entry => self.registration.index.remove(entry.id)));
+    const entries = await self.registration.index.getAll();
+    await Promise.all(entries.map(entry => self.registration.index.delete(entry.id)));
   }
 };
 
