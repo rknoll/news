@@ -58,7 +58,8 @@ const addNews = async (news, notify) => {
           type: 'image/png',
         },
       ],
-      launchUrl: `https://news.rknoll.at/news/${news.id}`,
+      url: `/news/${news.id}`,
+      launchUrl: `/news/${news.id}`,
     });
   }
 
