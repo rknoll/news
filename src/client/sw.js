@@ -72,9 +72,17 @@ const addNews = async (news, notify) => {
   }
 };
 
-const handlePush = async (data) => {
+const handlePushPromise = async (data) => {
   const news = await newsRequest(data.id);
   return addNews(news, !data.silent);
+};
+
+const handlePush = async (data) => {
+  if (data.waitForEvent) {
+    return handlePushPromise(data);
+  } else {
+    handlePushPromise(data);
+  }
 };
 
 const closeNotifications = async () => {

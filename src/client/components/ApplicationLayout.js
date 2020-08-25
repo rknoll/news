@@ -128,6 +128,7 @@ const ApplicationLayout = (props) => {
     5: 'In 5 Seconds',
     10: 'In 10 Seconds',
     60: 'In 1 Minute',
+    [-5]: 'In 5 Seconds - Don\'t wait for event',
   };
 
   return (
