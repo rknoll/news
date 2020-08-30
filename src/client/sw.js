@@ -38,7 +38,7 @@ const queryAssetsCache = async (request) => {
   return fetch(request);
 };
 
-const addNews = async (news, notify) => {
+const addNews = async (news, notify, wait) => {
   await Promise.all([db.add(news), cacheAssets(imagesKey, [news.iconUrl])]);
 
   const clientList = await clients.matchAll({ type: 'window' });
@@ -64,25 +64,18 @@ const addNews = async (news, notify) => {
   }
 
   if (notify) {
-    await self.registration.showNotification(news.title, {
+    const promise = self.registration.showNotification(news.title, {
       tag: news.id,
       body: news.description,
       icon: news.iconUrl,
     });
+    if (wait) await promise;
   }
-};
-
-const handlePushPromise = async (data) => {
-  const news = await newsRequest(data.id);
-  return addNews(news, !data.silent);
 };
 
 const handlePush = async (data) => {
-  if (data.waitForEvent) {
-    return handlePushPromise(data);
-  } else {
-    handlePushPromise(data);
-  }
+  const news = await newsRequest(data.id);
+  return addNews(news, !data.silent, data.waitForEvent);
 };
 
 const closeNotifications = async () => {
