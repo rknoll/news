@@ -10,7 +10,7 @@ export default () => {
       target: {
         namespace: 'android_app',
         package_name: 'at.rknoll.news',
-        sha256_cert_fingerprints: ['6D:CE:6B:B8:58:FA:76:A5:75:86:CD:5A:B8:A8:0F:D7:1A:10:41:2E:DE:08:7C:D0:94:DA:41:42:E1:0F:2B:71']
+        sha256_cert_fingerprints: ['03:33:DA:1F:04:6C:79:D2:18:6E:4E:50:33:B1:EB:E3:AB:39:33:83:86:86:B6:F0:66:82:70:AB:B3:2C:43:59']
       }
     }]);
   });
