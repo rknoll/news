@@ -8,6 +8,9 @@ import store, { history } from './store';
 import './styles/styles.css';
 import 'typeface-roboto';
 
+// Used by the server.
+import './assets/cat.jpg';
+
 const render = (Component) => {
   ReactDOM.render(
     <AppContainer>

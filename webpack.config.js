@@ -38,7 +38,7 @@ const config = {
         ],
       },
       {
-        test: /\.(png)(\?v=\d+\.\d+\.\d+)?$/,
+        test: /\.(png|jpe?g)(\?v=\d+\.\d+\.\d+)?$/,
         use: [{
           loader: 'file-loader',
           options: {
@@ -113,6 +113,7 @@ if (!isProduction) {
     proxy: {
       '/api/*': 'http://localhost:3000',
       '/img/*': 'http://localhost:3000',
+      '/delay/*': 'http://localhost:3000',
     },
   };
 }

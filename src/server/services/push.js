@@ -11,11 +11,15 @@ const options = {
   },
 };
 
-webpush.setVapidDetails(
-  'mailto:richard@rknoll.at',
-  vapidKeys.publicKey,
-  vapidKeys.privateKey
-);
+try {
+  webpush.setVapidDetails(
+    'mailto:richard@rknoll.at',
+    vapidKeys.publicKey,
+    vapidKeys.privateKey
+  );
+} catch (e) {
+  console.error(e);
+}
 
 export const notify = async (subscription, data) => {
   console.log('Notifying..');
