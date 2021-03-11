@@ -138,3 +138,5 @@ self.addEventListener('fetch', event => event.respondWith(queryAssetsCache(event
 self.addEventListener('push', event => event.waitUntil(handlePush(event.data.json())));
 self.addEventListener('notificationclick', event => event.waitUntil(handleClickEvent(event)));
 self.addEventListener('message', event => event.waitUntil(handleMessage(event)));
+
+console.log('Updated!');
