@@ -123,12 +123,13 @@ const ApplicationLayout = (props) => {
   const iconPush = !iconPermission && props.hasSubscription && !!navigator.serviceWorker.controller;
   const iconClear = props.hasNews;
 
-  const delayValues = {
-    0: 'Now',
-    5: 'In 5 Seconds',
-    10: 'In 10 Seconds',
-    60: 'In 1 Minute',
-    [-5]: 'In 5 Seconds - Don\'t wait for event',
+  const optionValues = {
+    '0,0,0': 'Now',
+    '5,0,0': 'In 5 Seconds',
+    '10,0,0': 'In 10 Seconds',
+    '60,0,0': 'In 1 Minute',
+    '5,1,0': 'In 5 Seconds - Don\'t wait for event',
+    '5,0,1': 'In 5 Seconds - Use forced ID',
   };
 
   return (
@@ -144,7 +145,7 @@ const ApplicationLayout = (props) => {
             </Button>
             <div>
               <LongPressIconButton icon={<BugReportIcon />} onClick={handleDebug} values={debugValues} />
-              <LongPressIconButton icon={<VisibilityOffIcon />} onClick={props.pushNews(true)} values={delayValues} />
+              <LongPressIconButton icon={<VisibilityOffIcon />} onClick={props.pushNews(true)} values={optionValues} />
               { iconUpdate &&
               <IconButton color='inherit' onClick={() => !updateLoading && props.updateApp(props.update.worker)}>
                 <SystemUpdateIcon className={updateLoading ? props.classes.updateLoading : ''} />
@@ -167,7 +168,7 @@ const ApplicationLayout = (props) => {
                 <DeleteIcon />
               </IconButton> }
               { iconPush && <LongPressIconButton
-                icon={<NotificationsIcon />} onClick={props.pushNews(false)} values={delayValues} />
+                icon={<NotificationsIcon />} onClick={props.pushNews(false)} values={optionValues} />
               }
             </div>
           </Toolbar>
@@ -192,10 +193,17 @@ const mapStateToProps = (state) => ({
   hasNews: state.news.list && state.news.list.length !== 0,
 });
 
+const parseOptions = (silent, options) => ({
+  silent,
+  delay: options && parseInt(options.split(',')[0]) || 0,
+  doNotWaitForEvent: options && (parseInt(options.split(',')[1]) || 0) === 1,
+  useForcedID: options && (parseInt(options.split(',')[2]) || 0) === 1,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   showNotificationDialog: () => dispatch(dialogActions.show(DIALOGS.NOTIFICATIONS)),
   clearNews: () => dispatch(newsActions.clearNews()),
-  pushNews: (silent) => (delay) => dispatch(newsActions.pushNewsRequest(silent, delay)),
+  pushNews: (silent) => (options) => dispatch(newsActions.pushNewsRequest(parseOptions(silent, options))),
   installApp: () => dispatch(appActions.install()),
   navigateHome: () => dispatch(push('/')),
   updateApp: (worker) => worker.postMessage({ action: 'skipWaiting' }),

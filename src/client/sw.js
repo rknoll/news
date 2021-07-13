@@ -38,7 +38,7 @@ const queryAssetsCache = async (request) => {
   return fetch(request);
 };
 
-const addNews = async (news, notify, wait) => {
+const addNews = async (news, notify, wait, useForcedID) => {
   await Promise.all([db.add(news), cacheAssets(imagesKey, [news.iconUrl])]);
 
   const clientList = await clients.matchAll({ type: 'window' });
@@ -65,7 +65,7 @@ const addNews = async (news, notify, wait) => {
 
   if (notify) {
     const promise = self.registration.showNotification(news.title, {
-      tag: news.id,
+      tag: useForcedID ? 'user_visible_auto_notification' : news.id,
       body: news.description,
       icon: news.iconUrl,
     });
@@ -75,7 +75,7 @@ const addNews = async (news, notify, wait) => {
 
 const handlePush = async (data) => {
   const news = await newsRequest(data.id);
-  return addNews(news, !data.silent, data.waitForEvent);
+  return addNews(news, !data.silent, !data.doNotWaitForEvent, data.useForcedID);
 };
 
 const closeNotifications = async () => {
